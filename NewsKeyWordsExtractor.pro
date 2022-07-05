@@ -1,0 +1,67 @@
+QT       += core gui network
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG += c++17
+
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES += \
+    AppContext.cpp \
+    AppInitializer.cpp \
+    AppView.cpp \
+    ConvertableToBytes.cpp \
+    Errorr.cpp \
+    FileManager.cpp \
+    NetworkCore.cpp \
+    NetworkRequestCreator.cpp \
+    NetworkRequestExecutor.cpp \
+    NetworkSourceContextPreparer.cpp \
+    RawNewsDataBase.cpp \
+    SourceBase.cpp \
+    SourceContextInterface.cpp \
+    SourceContextTelegram.cpp \
+    SourceContextVK.cpp \
+    SourceDictionary.cpp \
+    SourceStandardRSS.cpp \
+    SourceTelegram.cpp \
+    SourceVK.cpp \
+    SourcesFileManager.cpp \
+    ThreadedQueue.cpp \
+    ThreadedStringDictionary.cpp \
+    ThreadedStringDictionaryItem.cpp \
+    ThreadedTransactionData.cpp \
+    main.cpp
+
+HEADERS += \
+    AppContext.h \
+    AppInitializer.h \
+    AppView.h \
+    ConvertableToBytes.h \
+    Error.h \
+    FileManager.h \
+    NetworkCore.h \
+    NetworkRequestCreator.h \
+    NetworkRequestExecutor.h \
+    NetworkSourceContextPreparer.h \
+    RawNewsDataBase.h \
+    SourceBase.h \
+    SourceContextInterface.h \
+    SourceContextTelegram.h \
+    SourceContextVK.h \
+    SourceDictionary.h \
+    SourceStandardRSS.h \
+    SourceTelegram.h \
+    SourceVK.h \
+    SourcesFileManager.h \
+    ThreadedQueue.h \
+    ThreadedStringDictionary.h \
+    ThreadedStringDictionaryItem.h \
+    ThreadedTransactionData.h
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
