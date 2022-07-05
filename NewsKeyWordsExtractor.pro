@@ -19,6 +19,12 @@ SOURCES += \
     NetworkRequestCreator.cpp \
     NetworkRequestExecutor.cpp \
     NetworkSourceContextPreparer.cpp \
+    News.cpp \
+    NewsParserBase.cpp \
+    NewsParserStandardRSS.cpp \
+    NewsParserTelegram.cpp \
+    NewsParserVK.cpp \
+    ParserDictionary.cpp \
     RawNewsDataBase.cpp \
     SourceBase.cpp \
     SourceContextInterface.cpp \
@@ -46,6 +52,12 @@ HEADERS += \
     NetworkRequestCreator.h \
     NetworkRequestExecutor.h \
     NetworkSourceContextPreparer.h \
+    News.h \
+    NewsParserBase.h \
+    NewsParserStandardRSS.h \
+    NewsParserTelegram.h \
+    NewsParserVK.h \
+    ParserDictionary.h \
     RawNewsDataBase.h \
     SourceBase.h \
     SourceContextInterface.h \
