@@ -13,7 +13,7 @@ SOURCES += \
     AppInitializer.cpp \
     AppView.cpp \
     ConvertableToBytes.cpp \
-    Errorr.cpp \
+    Error.cpp \
     FileManager.cpp \
     NetworkCore.cpp \
     NetworkRequestCreator.cpp \
@@ -35,6 +35,7 @@ SOURCES += \
     SourceTelegram.cpp \
     SourceVK.cpp \
     SourcesFileManager.cpp \
+    TextKeyWordsExtractor.cpp \
     ThreadedQueue.cpp \
     ThreadedStringDictionary.cpp \
     ThreadedStringDictionaryItem.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     SourceTelegram.h \
     SourceVK.h \
     SourcesFileManager.h \
+    TextKeyWordsExtractor.h \
     ThreadedQueue.h \
     ThreadedStringDictionary.h \
     ThreadedStringDictionaryItem.h \

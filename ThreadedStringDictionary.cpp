@@ -19,7 +19,7 @@ std::unique_lock<std::mutex> generateLock(std::mutex &mutex,
 
 template<class Value>
 ThreadedStringDictionary<Value>::ThreadedStringDictionary()
-    : m_root {std::make_unique<ThreadedStringDictionaryItem<Value>>()},
+    : //m_root {std::make_unique<ThreadedStringDictionaryItem<Value>>()},
       m_mutex{}
 {
     
@@ -38,7 +38,7 @@ bool ThreadedStringDictionary<Value>::getClosestKey(const QString &key,
 
 template<class Value>
 bool ThreadedStringDictionary<Value>::addItem(const QString &key, 
-                                              std::unique_ptr<Value> &value,
+                                              std::unique_ptr<Value> &&value,
                                               std::shared_ptr<ThreadedTransactionData> transactionData)
 {
     std::unique_lock<std::mutex> lock = ::generateLock(m_mutex, transactionData);
@@ -50,7 +50,7 @@ bool ThreadedStringDictionary<Value>::addItem(const QString &key,
 
 template<class Value>
 bool ThreadedStringDictionary<Value>::changeValueOfKey(const QString &key, 
-                                                       std::unique_ptr<Value> &newValue,
+                                                       std::unique_ptr<Value> &&newValue,
                                                        std::shared_ptr<ThreadedTransactionData> transactionData)
 {
     std::unique_lock<std::mutex> lock = ::generateLock(m_mutex, transactionData);
@@ -66,7 +66,30 @@ bool ThreadedStringDictionary<Value>::changeValueOfKey(const QString &key,
 }
 
 template<>
-QJsonObject&& ThreadedStringDictionary<uint64_t>::toJson() const
+bool ThreadedStringDictionary<AppContext::WordsFrequency>::incrementValueOfKey(const QString &key, 
+                                                                               std::shared_ptr<ThreadedTransactionData> transactionData)
+{
+    std::unique_lock<std::mutex> lock = ::generateLock(m_mutex, transactionData);
+    
+    ThreadedStringDictionaryItem<AppContext::WordsFrequency> *item{nullptr};
+    QString                                                   curKey{};
+    
+    if (!searchIteration(key, *m_root, item, curKey)) return false;
+    
+    item->changeValue(std::make_unique<AppContext::WordsFrequency>(*(item->getValue()) + 1));
+    
+    return true;
+}
+
+template<class Value>
+bool ThreadedStringDictionary<Value>::incrementValueOfKey(const QString &key, 
+                                                          std::shared_ptr<ThreadedTransactionData> transactionData)
+{
+    return false;
+}
+
+template<>
+QJsonObject&& ThreadedStringDictionary<AppContext::WordsFrequency>::toJson() const
 {
     std::unique_lock<std::mutex> lock{m_mutex};
     
@@ -79,25 +102,25 @@ QJsonObject&& ThreadedStringDictionary<uint64_t>::toJson() const
 
 template<class Value>
 bool ThreadedStringDictionary<Value>::searchIteration(const QString &key,
-                                                      ThreadedStringDictionaryItem<Value> &curItem,
-                                                      ThreadedStringDictionaryItem<Value> &foundItem,
-                                                      QString &curKey, 
+                                                      const ThreadedStringDictionaryItem<Value> &curItem,
+                                                      ThreadedStringDictionaryItem<Value> *&foundItem,
+                                                      const QString &curKey, 
                                                       const unsigned int depth)
 {
     if (key == curKey) {
-        foundItem  = curItem;
+        foundItem = const_cast<ThreadedStringDictionaryItem<Value>*>(&curItem);
         
         return true;
     }
     
-    const auto &curNodes = curItem.getNodes();
+    auto &curNodes = curItem.getNodes();
     
     for (auto i = curNodes.begin(); i != curNodes.end(); ++i) {
         if (i->getChar() == key[depth]) 
-            return searchIteration(key, depth + 1, curKey + key[depth], foundItem);
+            return searchIteration(key, *i, foundItem, curKey + key[depth], depth + 1);
     }
     
-    foundItem = curItem;
+    foundItem = const_cast<ThreadedStringDictionaryItem<Value>*>(&curItem);
 
     return false;
 }
@@ -128,7 +151,7 @@ bool ThreadedStringDictionary<Value>::addIteration(const QString &key,
 }
 
 template<class Value>
-void ThreadedStringDictionary<Value>::toJsonIteration(const ThreadedStringDictionaryItem<uint64_t> &curItem,
+void ThreadedStringDictionary<Value>::toJsonIteration(const ThreadedStringDictionaryItem<AppContext::WordsFrequency> &curItem,
                                                       QJsonObject &jsonDictionary,
                                                       const QString curKey) const
 {

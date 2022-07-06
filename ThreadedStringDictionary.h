@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
+#include "AppContext.h"
+
 #include "ThreadedStringDictionaryItem.h"
 #include "ThreadedTransactionData.h"
 
@@ -19,19 +21,21 @@ public:
                            QString &closestKey,
                            std::shared_ptr<ThreadedTransactionData> transactionData = nullptr) const;
     bool addItem          (const QString &key,
-                           std::unique_ptr<Value> &value,
+                           std::unique_ptr<Value> &&value,
                            std::shared_ptr<ThreadedTransactionData> transactionData = nullptr);
     bool changeValueOfKey (const QString &key,
-                           std::unique_ptr<Value> &newValue,
+                           std::unique_ptr<Value> &&newValue,
                            std::shared_ptr<ThreadedTransactionData> transactionData = nullptr);
+    bool incrementValueOfKey(const QString &key,
+                             std::shared_ptr<ThreadedTransactionData> transactionData = nullptr);
     
     QJsonObject&& toJson() const;
     
 private:
     bool searchIteration(const QString &key,
-                         ThreadedStringDictionaryItem<Value> &curItem,
-                         ThreadedStringDictionaryItem<Value> &foundItem,
-                         QString &curKey,
+                         const ThreadedStringDictionaryItem<Value> &curItem,
+                         ThreadedStringDictionaryItem<Value> *&foundItem,
+                         const QString &curKey,
                          const unsigned int depth = 0);
     bool addIteration(const QString &key,
                       std::unique_ptr<Value> &value,
@@ -39,7 +43,7 @@ private:
                       const QString curKey = QString{},
                       const unsigned int depth = 0);
     
-    void toJsonIteration(const ThreadedStringDictionaryItem<uint64_t> &curItem,
+    void toJsonIteration(const ThreadedStringDictionaryItem<AppContext::WordsFrequency> &curItem,
                          QJsonObject &jsonDictionary,
                          const QString curKey = QString{}) const;
     

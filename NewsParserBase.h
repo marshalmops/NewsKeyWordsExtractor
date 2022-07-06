@@ -12,7 +12,8 @@ public:
     NewsParserBase(const SourceDictionary::SourceType sourceType);
     virtual ~NewsParserBase() = default;
     
-    virtual std::vector<News>&& parseData(const RawNewsDataBase &data) = 0;
+    virtual bool parseData(const RawNewsDataBase &data,
+                           std::vector<News> &news) = 0;
     
     SourceDictionary::SourceType getSourceType() const;
     

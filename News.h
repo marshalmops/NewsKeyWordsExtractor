@@ -8,9 +8,9 @@ class News
 {
 public:
     News();
-    News(const QString& title,
-         const QString& text,
-         const QDate& date);
+    News(const QString& text,
+         const QString& title = QString{},
+         const QDate& date = QDate{});
     
     const QString& getTitle() const;
     const QString& getText () const;

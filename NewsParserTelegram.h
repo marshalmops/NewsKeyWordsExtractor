@@ -8,7 +8,8 @@ class NewsParserTelegram : public NewsParserBase
 public:
     NewsParserTelegram();
     
-    virtual std::vector<News>&& parseData(const RawNewsDataBase &data) override;
+    virtual bool parseData(const RawNewsDataBase &data,
+                           std::vector<News> &news) override;
 };
 
 #endif // NEWSPARSERTELEGRAM_H
