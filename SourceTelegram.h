@@ -14,6 +14,8 @@ public:
                    const AppContext::Id id = 0,
                    const std::shared_ptr<SourceContextTelegram> &sourceContext = std::shared_ptr<SourceContextTelegram>(nullptr));
     
+    virtual AppContext::SourceType getType() const override;
+    
     const QString& getChannelName() const;
     AppContext::Id getChannelId  () const;
     

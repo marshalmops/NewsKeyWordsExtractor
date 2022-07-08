@@ -14,7 +14,7 @@ public:
                           std::vector<News> &news);
     
 private:
-    static std::unique_ptr<NewsParserBase> getParserBySourceType(const SourceDictionary::SourceType sourceType);
+    static std::unique_ptr<NewsParserBase> getParserBySourceType(const AppContext::SourceType sourceType);
 };
 
 #endif // PARSERDICTIONARY_H

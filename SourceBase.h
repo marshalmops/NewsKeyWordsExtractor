@@ -22,6 +22,7 @@ public:
     virtual ~SourceBase() = default;
     
     virtual QUrl getBaseUrl() const;
+    virtual AppContext::SourceType getType() const = 0;
     
     std::shared_ptr<SourceContextInterface> getContext() const;
     bool setContext(const std::shared_ptr<SourceContextInterface> &context);

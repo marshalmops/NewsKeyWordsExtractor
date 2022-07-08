@@ -1,7 +1,7 @@
 #include "NewsParserTelegram.h"
 
 NewsParserTelegram::NewsParserTelegram()
-    : NewsParserBase{SourceDictionary::SourceType::ST_TELEGRAM}
+    : NewsParserBase{AppContext::SourceType::ST_TELEGRAM}
 {
     
 }

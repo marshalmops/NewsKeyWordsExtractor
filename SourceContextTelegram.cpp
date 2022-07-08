@@ -25,6 +25,11 @@ const AppContext::Phone &SourceContextTelegram::getPhone() const
     return m_phone;
 }
 
+AppContext::SourceType SourceContextTelegram::getType() const
+{
+    return AppContext::SourceType::ST_TELEGRAM;
+}
+
 QByteArray SourceContextTelegram::toByteArray() const
 {
     return (QByteArray::number(m_apiId) + C_PARAMS_SEPARATOR

@@ -1,13 +1,13 @@
 #include "RawNewsDataBase.h"
 
 RawNewsDataBase::RawNewsDataBase()
-    : m_sourceType{SourceDictionary::SourceType::ST_INVALID},
+    : m_sourceType{AppContext::SourceType::ST_INVALID},
       m_data{}
 {
     
 }
 
-RawNewsDataBase::RawNewsDataBase(const SourceDictionary::SourceType type,
+RawNewsDataBase::RawNewsDataBase(const AppContext::SourceType type,
                                  const QByteArray &data)
     : m_sourceType{type},
       m_data{data}
@@ -15,7 +15,7 @@ RawNewsDataBase::RawNewsDataBase(const SourceDictionary::SourceType type,
     
 }
 
-SourceDictionary::SourceType RawNewsDataBase::getSourceType() const
+AppContext::SourceType RawNewsDataBase::getSourceType() const
 {
     return m_sourceType;
 }

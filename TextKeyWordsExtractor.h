@@ -12,7 +12,7 @@ class TextKeyWordsExtractor
     constexpr static const float C_EQUALITY_COEFFICIENT = 0.76;
     
 public:
-    TextKeyWordsExtractor();
+    TextKeyWordsExtractor() = default;
     
     bool extractKeyWordsOfNews(const std::vector<News> &news,
                                std::shared_ptr<ThreadedStringDictionary<AppContext::WordsFrequency>> &dictionary);

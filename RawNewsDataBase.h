@@ -1,21 +1,21 @@
 #ifndef RAWNEWSDATABASE_H
 #define RAWNEWSDATABASE_H
 
-#include "SourceDictionary.h"
+#include "AppContext.h"
 
 class RawNewsDataBase
 {
 public:
     RawNewsDataBase();
-    RawNewsDataBase(const SourceDictionary::SourceType type,
+    RawNewsDataBase(const AppContext::SourceType type,
                     const QByteArray &data);
     
-    SourceDictionary::SourceType getSourceType() const;
-    const QByteArray&            getData      () const;
+    AppContext::SourceType getSourceType() const;
+    const QByteArray&      getData      () const;
     
 private:
-    SourceDictionary::SourceType m_sourceType;
-    QByteArray                   m_data;
+    AppContext::SourceType m_sourceType;
+    QByteArray             m_data;
 };
 
 #endif // RAWNEWSDATABASE_H

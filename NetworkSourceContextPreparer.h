@@ -1,6 +1,7 @@
 #ifndef NETWORKSOURCECONTEXTPREPARER_H
 #define NETWORKSOURCECONTEXTPREPARER_H
 
+#include <QObject>
 #include <queue>
 
 #include "SourceContextTelegram.h"
@@ -21,9 +22,8 @@ class NetworkSourceContextPreparer : public QObject
     Q_OBJECT
     
     struct ContextPreparingBuffer {
-        SourceDictionary::SourceType m_type;
-        uint8_t                      m_preparingStepNumb;
-        uint8_t                      m_curPreparingStep;
+        uint8_t m_preparingStepNumb;
+        uint8_t m_curPreparingStep;
         
         SourceContextInterface *m_contextPtr;
     };
@@ -31,11 +31,18 @@ class NetworkSourceContextPreparer : public QObject
 public:
     NetworkSourceContextPreparer(const std::shared_ptr<NetworkRequestExecutor> &networkExecutor);
     
-    template<class SourceType>
-    bool prepareSource(SourceType *source);
+    bool prepareRSSSource     (SourceStandardRSS *source);
+    bool prepareTelegramSource(SourceTelegram *source);
+    bool prepareVKSource      (SourceVK *source);
+    bool prepareSource        (SourceBase *source);
     
-    template<class SourceContextType>
-    bool prepareSourceContext(SourceContextType *sourceContext, 
+    bool prepareTelegramSourceContext(SourceContextTelegram *sourceContext, 
+                                      const FormData &preparingData = FormData{},
+                                      const uint8_t curStep = 1);
+    bool prepareVKSourceContext(SourceContextVK *sourceContext, 
+                                const FormData &preparingData = FormData{},
+                                const uint8_t curStep = 1);
+    bool prepareSourceContext(SourceContextInterface *sourceContext, 
                               const FormData &preparingData = FormData{},
                               const uint8_t curStep = 1);
     

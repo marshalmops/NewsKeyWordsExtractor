@@ -1,25 +1,28 @@
 #include "SourceDictionary.h"
 
-bool SourceDictionary::createNewSourceFromBytes(const SourceType type, 
+std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>> SourceDictionary::m_sources = std::make_shared<std::vector<std::shared_ptr<SourceBase>>>();
+std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>> SourceDictionary::m_sourcesContexts = std::make_shared<std::vector<std::shared_ptr<SourceContextInterface>>>();
+
+bool SourceDictionary::createNewSourceFromBytes(const AppContext::SourceType type, 
                                                 const QByteArray &data)
 {
     std::unique_ptr<SourceBase> source;
     
     switch (type) {
-    case SourceType::ST_STANDARD_RSS: {
+    case AppContext::SourceType::ST_STANDARD_RSS: {
         source = std::make_unique<SourceStandardRSS>();
         
         break;
     }
-    case SourceType::ST_TELEGRAM: {
+    case AppContext::SourceType::ST_TELEGRAM: {
         source = std::make_unique<SourceTelegram>();
         
         if (!source->setContext(getSourceContext(type))) return false;
         
         break;
     }
-    case SourceType::ST_VK: {
-        if (getSourceIteratorByType(SourceType::ST_VK) != m_sources->end())
+    case AppContext::SourceType::ST_VK: {
+        if (getSourceIteratorByType(AppContext::SourceType::ST_VK) != m_sources->end())
             return true;
         
         source = std::make_unique<SourceVK>();
@@ -39,23 +42,23 @@ bool SourceDictionary::createNewSourceFromBytes(const SourceType type,
     return true;
 }
 
-bool SourceDictionary::createSourceContextFromBytes(const SourceType type,
+bool SourceDictionary::createSourceContextFromBytes(const AppContext::SourceType type,
                                                     const QByteArray &data)
 {
     std::shared_ptr<SourceContextInterface> sourceContext;
     
     switch (type) {
-    case SourceType::ST_STANDARD_RSS: {return true;}
-    case SourceType::ST_TELEGRAM: {
+    case AppContext::SourceType::ST_STANDARD_RSS: {return true;}
+    case AppContext::SourceType::ST_TELEGRAM: {
         sourceContext = std::make_shared<SourceContextTelegram>();
         
         break;
     }
-    case SourceType::ST_VK: {
+    case AppContext::SourceType::ST_VK: {
         sourceContext = std::make_shared<SourceContextVK>();
         
-        if (type == SourceType::ST_VK) {
-            if (getSourceIteratorByType(SourceType::ST_VK) == m_sources->end()) {
+        if (type == AppContext::SourceType::ST_VK) {
+            if (getSourceIteratorByType(AppContext::SourceType::ST_VK) == m_sources->end()) {
                 if (!createNewSource(std::make_unique<SourceVK>()))
                     return false;
             }
@@ -77,17 +80,17 @@ bool SourceDictionary::createNewSource(std::unique_ptr<SourceBase> &&source)
 {
     if (!source.get()) return false;
     
-    auto sourceType = getSourceType(source.get());
+    auto sourceType = source->getType();
     
     switch (sourceType) {
-    case SourceType::ST_STANDARD_RSS: {break;}
-    case SourceType::ST_TELEGRAM: {
+    case AppContext::SourceType::ST_STANDARD_RSS: {break;}
+    case AppContext::SourceType::ST_TELEGRAM: {
         if (!source->setContext(getSourceContext(sourceType))) return false;
         
         break;
     }
-    case SourceType::ST_VK: {
-        if (getSourceIteratorByType(SourceType::ST_VK) != m_sources->end())
+    case AppContext::SourceType::ST_VK: {
+        if (getSourceIteratorByType(AppContext::SourceType::ST_VK) != m_sources->end())
             return true;
         
         if (!source->setContext(getSourceContext(sourceType))) return false;
@@ -107,7 +110,7 @@ bool SourceDictionary::createSourceContext(std::unique_ptr<SourceContextInterfac
 {
     if (!sourceContext.get()) return false;
     
-    auto sourceContextType = getSourceContextType(sourceContext.get());
+    auto sourceContextType = sourceContext->getType();
     auto prevSourceContext = getSourceContext(sourceContextType);
     
     if (!prevSourceContext.get()) {
@@ -115,8 +118,8 @@ bool SourceDictionary::createSourceContext(std::unique_ptr<SourceContextInterfac
     } else
         *(prevSourceContext.get()) = *(sourceContext.release());
     
-    if (sourceContextType == SourceType::ST_VK) {
-        if (getSourceIteratorByType(SourceType::ST_VK) == m_sources->end()) {
+    if (sourceContextType == AppContext::SourceType::ST_VK) {
+        if (getSourceIteratorByType(AppContext::SourceType::ST_VK) == m_sources->end()) {
             if (!createNewSource(std::make_unique<SourceVK>()))
                 return false;
         }
@@ -148,10 +151,10 @@ const std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>> &Sou
     return m_sourcesContexts;
 }
 
-std::shared_ptr<SourceContextInterface> SourceDictionary::getSourceContext(const SourceType sourceType)
+std::shared_ptr<SourceContextInterface> SourceDictionary::getSourceContext(const AppContext::SourceType sourceType)
 {
     for (auto i = m_sourcesContexts->begin(); i != m_sourcesContexts->end(); ++i) {
-        if (getSourceContextType((*i).get()) == sourceType)
+        if ((*i)->getType() == sourceType)
             return *i;
     }
     
@@ -171,41 +174,11 @@ std::vector<std::shared_ptr<SourceBase>>::iterator SourceDictionary::getSourceIt
     return m_sources->end();
 }
 
-std::vector<std::shared_ptr<SourceBase>>::iterator SourceDictionary::getSourceIteratorByType(const SourceType sourceType)
+std::vector<std::shared_ptr<SourceBase>>::iterator SourceDictionary::getSourceIteratorByType(const AppContext::SourceType sourceType)
 {
     for (auto i = m_sources->begin(); i != m_sources->end(); ++i) {
-        if (getSourceType(&(*i)) == sourceType) return i;
+        if ((*i)->getType() == sourceType) return i;
     }
     
     return m_sources->end();
-}
-
-template<>
-SourceDictionary::SourceType SourceDictionary::getSourceType<SourceStandardRSS>(SourceStandardRSS *source)
-{
-    return SourceType::ST_STANDARD_RSS;
-}
-
-template<>
-SourceDictionary::SourceType SourceDictionary::getSourceType<SourceTelegram>(SourceTelegram *source)
-{
-    return SourceType::ST_TELEGRAM;
-}
-
-template<>
-SourceDictionary::SourceType SourceDictionary::getSourceType<SourceVK>(SourceVK *source)
-{
-    return SourceType::ST_VK;
-}
-
-template<>
-SourceDictionary::SourceType SourceDictionary::getSourceContextType<SourceContextTelegram>(SourceContextTelegram *source)
-{
-    return SourceType::ST_TELEGRAM;
-}
-
-template<>
-SourceDictionary::SourceType SourceDictionary::getSourceContextType<SourceContextVK>(SourceContextVK *source)
-{
-    return SourceType::ST_VK;
 }

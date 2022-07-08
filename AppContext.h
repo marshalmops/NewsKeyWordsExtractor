@@ -6,16 +6,20 @@
 
 namespace AppContext
 {
-
 using Token = QString;
 using Id    = uint64_t;
 using Phone = QString;
 
 using WordsFrequency = uint64_t;
 
-bool isPhone(const QString &phone) {
-    return (QRegExp{"^\\+[0-9]{1,}$"}.indexIn(phone));
-}
+bool isPhone(const QString &phone);
+
+enum SourceType : uint8_t {
+    ST_INVALID = 0,
+    ST_STANDARD_RSS,
+    ST_TELEGRAM,
+    ST_VK
+};
 
 };
 

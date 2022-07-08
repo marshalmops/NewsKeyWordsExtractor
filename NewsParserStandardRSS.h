@@ -3,6 +3,7 @@
 
 #include <QXmlStreamReader>
 
+#include "AppContext.h"
 #include "NewsParserBase.h"
 
 class NewsParserStandardRSS : public NewsParserBase

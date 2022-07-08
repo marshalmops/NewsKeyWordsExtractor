@@ -18,6 +18,11 @@ SourceTelegram::SourceTelegram(const QString &channelName,
     
 }
 
+AppContext::SourceType SourceTelegram::getType() const
+{
+    return AppContext::SourceType::ST_TELEGRAM;
+}
+
 const QString &SourceTelegram::getChannelName() const
 {
     return m_channelName;

@@ -12,6 +12,11 @@ const AppContext::Token &SourceContextVK::getToken() const
     return m_token;
 }
 
+AppContext::SourceType SourceContextVK::getType() const
+{
+    return AppContext::SourceType::ST_VK;
+}
+
 QByteArray SourceContextVK::toByteArray() const
 {
     return (m_token.toUtf8());
@@ -32,4 +37,9 @@ bool SourceContextVK::fromByteArray(const QByteArray &bytes)
     m_token = std::move(tokenBuffer);
     
     return true;
+}
+
+bool SourceContextVK::isPrepared() const
+{
+    return !m_token.isEmpty();
 }

@@ -3,6 +3,8 @@
 
 #include <QByteArray>
 
+#include "AppContext.h"
+
 #include "ConvertableToBytes.h"
 #include "PreparableObject.h"
 
@@ -16,6 +18,8 @@ protected:
 public:   
     SourceContextInterface         () = default;
     virtual ~SourceContextInterface() = default;
+    
+    virtual AppContext::SourceType getType() const = 0;
     
     virtual bool isPrepared() const = 0;
 };

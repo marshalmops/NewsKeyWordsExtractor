@@ -77,7 +77,7 @@ void NetworkCore::receiveData()
             return;
         }
         
-        RawNewsDataBase newData{SourceDictionary::getSourceType((*i).get()), newDataBytes};
+        RawNewsDataBase newData{(*i)->getType(), newDataBytes};
     
         data.push_back(newData);
     }

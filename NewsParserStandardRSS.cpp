@@ -21,7 +21,7 @@ bool readPropertyFromXmlStream(const QString &propName,
 }
 
 NewsParserStandardRSS::NewsParserStandardRSS()
-    : NewsParserBase{SourceDictionary::SourceType::ST_STANDARD_RSS}
+    : NewsParserBase{AppContext::SourceType::ST_STANDARD_RSS}
 {
     
 }

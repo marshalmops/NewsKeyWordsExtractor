@@ -11,7 +11,7 @@ bool SourcesFileManager::saveSources(const QString &filename)
     QByteArray     sourcesBytes{};
     
     for (auto i = sources->begin(); i != sources->end(); ++i)
-        sourcesBytes += (QByteArray::number(SourceDictionary::getSourceType(&(*i))) + (*i)->toByteArray() + C_SOURCES_SEPARATOR);
+        sourcesBytes += (QByteArray::number((*i)->getType()) + (*i)->toByteArray() + C_SOURCES_SEPARATOR);
     
     if (file.write(sourcesBytes) != sourcesBytes.length()) return false;
     
@@ -27,20 +27,20 @@ bool SourcesFileManager::loadSources(const QString &filename)
     
     QByteArray sourcesBytes{file.readAll()};
     
-    if (sourcesBytes.length() < sizeof(SourceDictionary::SourceType)) return false;
+    if (sourcesBytes.length() < sizeof(AppContext::SourceType)) return false;
     
     QByteArray readBuffer{};
     size_t     curIndex  {0};
     
     while (true) {
-        QByteArray rawSourceType{sourcesBytes.mid(curIndex, sizeof(SourceDictionary::SourceType))};
+        QByteArray rawSourceType{sourcesBytes.mid(curIndex, sizeof(AppContext::SourceType))};
         bool isConvOK{false};
         
-        auto sourceType{static_cast<SourceDictionary::SourceType>(rawSourceType.toUShort(&isConvOK))};
+        auto sourceType{static_cast<AppContext::SourceType>(rawSourceType.toUShort(&isConvOK))};
         
         if (!isConvOK) return false;
         
-        curIndex += sizeof(SourceDictionary::SourceType);
+        curIndex += sizeof(AppContext::SourceType);
         
         while (true) {
             if (curIndex >= sourcesBytes.length()) return false;
@@ -75,7 +75,7 @@ bool SourcesFileManager::saveSourcesContexts(const QString &filename)
     QByteArray     sourcesContextsBytes{};
     
     for (auto i = sourcesContexts->begin(); i != sourcesContexts->end(); ++i)
-        sourcesContextsBytes += (QByteArray::number(SourceDictionary::getSourceContextType(&(*i))) + (*i)->toByteArray() + C_SOURCES_SEPARATOR);
+        sourcesContextsBytes += (QByteArray::number((*i)->getType()) + (*i)->toByteArray() + C_SOURCES_SEPARATOR);
     
     if (file.write(sourcesContextsBytes) != sourcesContextsBytes.length()) return false;
     
@@ -91,20 +91,20 @@ bool SourcesFileManager::loadSourcesContexts(const QString &filename)
     
     QByteArray sourcesContextsBytes{file.readAll()};
     
-    if (sourcesContextsBytes.length() < sizeof(SourceDictionary::SourceType)) return false;
+    if (sourcesContextsBytes.length() < sizeof(AppContext::SourceType)) return false;
     
     QByteArray readBuffer{};
     size_t     curIndex  {0};
     
     while (true) {
-        QByteArray rawSourceType{sourcesContextsBytes.mid(curIndex, sizeof(SourceDictionary::SourceType))};
+        QByteArray rawSourceType{sourcesContextsBytes.mid(curIndex, sizeof(AppContext::SourceType))};
         bool isConvOK{false};
         
-        auto sourceType{static_cast<SourceDictionary::SourceType>(rawSourceType.toUShort(&isConvOK))};
+        auto sourceType{static_cast<AppContext::SourceType>(rawSourceType.toUShort(&isConvOK))};
         
         if (!isConvOK) return false;
         
-        curIndex += sizeof(SourceDictionary::SourceType);
+        curIndex += sizeof(AppContext::SourceType);
         
         while (true) {
             if (curIndex >= sourcesContextsBytes.length()) return false;

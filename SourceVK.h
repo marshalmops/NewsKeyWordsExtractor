@@ -12,6 +12,8 @@ public:
     SourceVK(const AppContext::Id id = 0,
              const std::shared_ptr<SourceContextVK> &sourceContext = std::shared_ptr<SourceContextVK>(nullptr));
     
+    virtual AppContext::SourceType getType() const override;
+    
     QByteArray toByteArray  ()                  const override;
     bool       fromByteArray(const QByteArray &bytes) override;
     

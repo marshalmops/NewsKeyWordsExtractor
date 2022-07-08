@@ -106,5 +106,9 @@ bool TextKeyWordsExtractor::getWordsEqualityRate(const QString &firstWord,
         else if (equalSignsSequenceLength > 0) break;
     }
     
+    auto longestWordLength = (firstWord.length() > secondWord.length() ? firstWord.length() : secondWord.length());
+    
+    equalityRate = equalSignsSequenceLength / static_cast<float>(longestWordLength);
+    
     return true;
 }

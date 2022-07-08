@@ -13,6 +13,11 @@ SourceStandardRSS::SourceStandardRSS(const QUrl &url,
     
 }
 
+AppContext::SourceType SourceStandardRSS::getType() const
+{
+    return AppContext::SourceType::ST_STANDARD_RSS;
+}
+
 QByteArray SourceStandardRSS::toByteArray() const
 {
     return m_url.toString().toUtf8();

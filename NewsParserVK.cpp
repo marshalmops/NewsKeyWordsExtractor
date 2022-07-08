@@ -1,7 +1,7 @@
 #include "NewsParserVK.h"
 
 NewsParserVK::NewsParserVK()
-    : NewsParserBase{SourceDictionary::SourceType::ST_VK}
+    : NewsParserBase{AppContext::SourceType::ST_VK}
 {
     
 }

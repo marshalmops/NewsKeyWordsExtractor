@@ -81,6 +81,13 @@ AppView::AppView(QWidget *parent)
     setLayout(mainLayout);
     setWindowTitle(tr("News key words extractor"));
     
+    connect(m_setTelegramContextButton,   &QPushButton::clicked, this, &AppView::setTelegramData);
+    connect(m_setVKContextButton,         &QPushButton::clicked, this, &AppView::setVKData);
+    connect(m_addRSSSourceButton,         &QPushButton::clicked, this, &AppView::addRSSSource);
+    connect(m_addTelegramSourceButton,    &QPushButton::clicked, this, &AppView::addTelegramSource);
+    connect(m_removeRSSSourceButton,      &QPushButton::clicked, this, &AppView::deleteRSSSource);
+    connect(m_removeTelegramSourceButton, &QPushButton::clicked, this, &AppView::deleteTelegramSource);
+    
     // FIXME: telegram blocking:
     
     m_setTelegramContextButton->setEnabled(false);
@@ -258,11 +265,8 @@ void AppView::endContextPreparing()
 bool AppView::getFormDataWithTemplate(const FormTemplate &formTemplate,
                                       FormData &formData)
 {
-    if (FormWidget{formTemplate, formData}.exec() != QDialog::Accepted) {
-        QMessageBox::warning(this, tr("Error"), tr("Provided data is incorrect!"));
-        
+    if (FormWidget{formTemplate, formData}.exec() != QDialog::Accepted)
         return false;
-    }
     
     if (formData.getData().length() != formTemplate.getTemplateData().length()) {
         QMessageBox::warning(this, tr("Error"), tr("Provided data is not full!"));

@@ -18,8 +18,13 @@ class NetworkRequestCreator
 public:
     NetworkRequestCreator(const std::shared_ptr<NetworkSourceContextPreparer> &sourcePreparer);
     
-    template<class SourceType>
-    bool createRequestForSource(SourceType *source, 
+    bool createRequestForRSSSource(SourceBase *source, 
+                                   QNetworkRequest &request);
+    bool createRequestForTelegramSource(SourceBase *source, 
+                                        QNetworkRequest &request);
+    bool createRequestForVKSource(SourceBase *source, 
+                                  QNetworkRequest &request);
+    bool createRequestForSource(SourceBase *source, 
                                 QNetworkRequest &request);
     
     bool processAdditionalDataForPreparing(const std::vector<std::pair<QString, QString>> &gottenParams);

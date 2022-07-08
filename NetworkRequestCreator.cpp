@@ -6,23 +6,8 @@ NetworkRequestCreator::NetworkRequestCreator(const std::shared_ptr<NetworkSource
     
 }
 
-//bool NetworkRequestCreator::processAdditionalDataForPreparing(const std::vector<std::pair<QString, QString> > &gottenParams)
-//{
-//    return m_sourcePreparer->processGottenAdditionalData(gottenParams);
-//}
-
-bool NetworkRequestCreator::checkSourcePreparation(SourceBase *source)
-{
-    if (!source) return false;
-    if (!source->getContext()->isPrepared()) return false;
-    if (!source->isPrepared()) return false;
-    
-    return true;
-}
-
-template<>
-bool NetworkRequestCreator::createRequestForSource<SourceStandardRSS>(SourceStandardRSS *source,
-                                                                      QNetworkRequest &request)
+bool NetworkRequestCreator::createRequestForRSSSource(SourceBase *source, 
+                                                      QNetworkRequest &request)
 {
     if (!source) return false;
     
@@ -31,9 +16,8 @@ bool NetworkRequestCreator::createRequestForSource<SourceStandardRSS>(SourceStan
     return true;
 }
 
-template<>
-bool NetworkRequestCreator::createRequestForSource<SourceTelegram>(SourceTelegram *source,
-                                                                   QNetworkRequest &request)
+bool NetworkRequestCreator::createRequestForTelegramSource(SourceBase *source,
+                                                           QNetworkRequest &request)
 {
     if (!checkSourcePreparation(source)) return false;
     
@@ -49,9 +33,8 @@ bool NetworkRequestCreator::createRequestForSource<SourceTelegram>(SourceTelegra
     return true;
 }
 
-template<>
-bool NetworkRequestCreator::createRequestForSource<SourceVK>(SourceVK *source,
-                                                             QNetworkRequest &request)
+bool NetworkRequestCreator::createRequestForVKSource(SourceBase *source, 
+                                                     QNetworkRequest &request)
 {
     if (!checkSourcePreparation(source)) return false;
     
@@ -71,9 +54,25 @@ bool NetworkRequestCreator::createRequestForSource<SourceVK>(SourceVK *source,
     return true;
 }
 
-template<class SourceType>
-bool NetworkRequestCreator::createRequestForSource(SourceType *source, 
+bool NetworkRequestCreator::createRequestForSource(SourceBase *source, 
                                                    QNetworkRequest &request)
 {
+    if (!source) return false;
+    
+    switch (source->getType()) {
+    case AppContext::SourceType::ST_STANDARD_RSS: return createRequestForRSSSource(dynamic_cast<SourceStandardRSS*>(source), request);
+    case AppContext::SourceType::ST_TELEGRAM:     return createRequestForTelegramSource(dynamic_cast<SourceTelegram*>(source), request);
+    case AppContext::SourceType::ST_VK:           return createRequestForVKSource(dynamic_cast<SourceVK*>(source), request);
+    }
+    
     return false;
+}
+
+bool NetworkRequestCreator::checkSourcePreparation(SourceBase *source)
+{
+    if (!source) return false;
+    if (!source->getContext()->isPrepared()) return false;
+    if (!source->isPrepared()) return false;
+    
+    return true;
 }

@@ -7,6 +7,11 @@ SourceVK::SourceVK(const AppContext::Id id,
     
 }
 
+AppContext::SourceType SourceVK::getType() const
+{
+    return AppContext::SourceType::ST_VK;
+}
+
 QByteArray SourceVK::toByteArray() const
 {
     return m_url.toString().toUtf8();

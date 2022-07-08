@@ -5,6 +5,8 @@ MainCore::MainCore(std::shared_ptr<FileManager> fileManager,
                    QObject *parent)
     : QObject{parent},
       m_fileManager{fileManager},
+      m_dictionary{std::make_shared<ThreadedStringDictionary<AppContext::WordsFrequency>>()},
+      m_rawNewsQueue{std::make_shared<ThreadedQueue<RawNewsDataBase>>()},
       m_usedThreadsCount{usedThreadsCount},
       m_stopCounter{0}
 {

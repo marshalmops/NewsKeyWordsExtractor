@@ -10,6 +10,8 @@ public:
     SourceStandardRSS(const QUrl &url,
                       const AppContext::Id id = 0);
     
+    virtual AppContext::SourceType getType() const override;
+    
     QByteArray toByteArray  ()                  const override;
     bool       fromByteArray(const QByteArray &bytes) override;
     

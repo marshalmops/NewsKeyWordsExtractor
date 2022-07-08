@@ -17,6 +17,8 @@ public:
     
     const AppContext::Token& getToken() const;
     
+    virtual AppContext::SourceType getType() const override;
+    
     virtual QByteArray toByteArray  ()                  const override;
     virtual bool       fromByteArray(const QByteArray &bytes) override;
     

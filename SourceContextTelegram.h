@@ -19,6 +19,8 @@ public:
     const AppContext::Token& getApiHash() const;
     const AppContext::Phone& getPhone  () const;
     
+    virtual AppContext::SourceType getType() const override;
+    
     virtual QByteArray toByteArray  ()                  const override;
     virtual bool       fromByteArray(const QByteArray &bytes) override;
     

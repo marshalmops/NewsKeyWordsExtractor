@@ -1,27 +1,32 @@
 #include "NetworkSourceContextPreparer.h"
 
 NetworkSourceContextPreparer::NetworkSourceContextPreparer(const std::shared_ptr<NetworkRequestExecutor> &networkExecutor)
-    : m_networkExecutor{networkExecutor}
+    : QObject{},
+      m_networkExecutor{networkExecutor}
 {
     
 }
 
-bool NetworkSourceContextPreparer::processGottenAdditionalInputData(const FormData &gottenParams)
+bool NetworkSourceContextPreparer::prepareSource(SourceBase *source)
 {
-    auto curPreparing = std::move(m_preparingBuffers.front());
+    if (!source) return false;
+    if (source->isPrepared()) return true;
+
+    switch (source->getType()) {
+    case AppContext::SourceType::ST_STANDARD_RSS: return prepareRSSSource(dynamic_cast<SourceStandardRSS*>(source));
+    case AppContext::SourceType::ST_TELEGRAM:     return prepareTelegramSource(dynamic_cast<SourceTelegram*>(source));
+    case AppContext::SourceType::ST_VK:           return prepareVKSource(dynamic_cast<SourceVK*>(source));        
+    }
     
-    m_preparingBuffers.pop();
-    
-    return prepareSourceContext(curPreparing.m_contextPtr, gottenParams, curPreparing.m_curPreparingStep + 1);
+    return false;
 }
 
-bool NetworkSourceContextPreparer::isPreparationBufferEmpty() const
+bool NetworkSourceContextPreparer::prepareRSSSource(SourceStandardRSS *source)
 {
-    return m_preparingBuffers.empty();
+    return true;
 }
 
-template<>
-bool NetworkSourceContextPreparer::prepareSource<SourceTelegram>(SourceTelegram *source)
+bool NetworkSourceContextPreparer::prepareTelegramSource(SourceTelegram *source)
 {
     if (!source) return false;
     if (source->isPrepared()) return true;
@@ -38,16 +43,14 @@ bool NetworkSourceContextPreparer::prepareSource<SourceTelegram>(SourceTelegram 
     return true;
 }
 
-template<class SourceType>
-bool NetworkSourceContextPreparer::prepareSource(SourceType *source)
+bool NetworkSourceContextPreparer::prepareVKSource(SourceVK *source)
 {
     return true;
 }
 
-template<>
-bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextTelegram>(SourceContextTelegram *sourceContext,
-                                                                               const FormData &preparingData,
-                                                                               const uint8_t curStep)
+bool NetworkSourceContextPreparer::prepareTelegramSourceContext(SourceContextTelegram *sourceContext, 
+                                                        const FormData &preparingData,
+                                                        const uint8_t curStep)
 {
     if (!sourceContext) return false;
     
@@ -55,7 +58,6 @@ bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextTelegram>(S
     case 1: {
         NetworkSourceContextPreparer::ContextPreparingBuffer preparingBuffer{};
         
-        preparingBuffer.m_type = SourceDictionary::SourceType::ST_TELEGRAM;
         preparingBuffer.m_preparingStepNumb = 2;
         preparingBuffer.m_curPreparingStep = 1;
         preparingBuffer.m_contextPtr = sourceContext;
@@ -80,18 +82,43 @@ bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextTelegram>(S
     return true;
 }
 
-template<>
-bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextVK>(SourceContextVK *sourceContext,
-                                                                         const FormData &preparingData,
-                                                                         const uint8_t curStep)
+bool NetworkSourceContextPreparer::prepareSourceContext(SourceContextInterface *sourceContext, 
+                                                        const FormData &preparingData, 
+                                                        const uint8_t curStep)
+{
+    if (!sourceContext) return false;
+    if (sourceContext->isPrepared()) return true;
+
+    switch (sourceContext->getType()) {
+    case AppContext::SourceType::ST_TELEGRAM: return prepareTelegramSourceContext(dynamic_cast<SourceContextTelegram*>(sourceContext));
+    case AppContext::SourceType::ST_VK:       return prepareVKSourceContext(dynamic_cast<SourceContextVK*>(sourceContext));        
+    }
+    
+    return false;
+}
+
+bool NetworkSourceContextPreparer::prepareVKSourceContext(SourceContextVK *sourceContext,
+                                                          const FormData &preparingData, 
+                                                          const uint8_t curStep)
 {
     return true;
 }
 
-template<class SourceContextType>
-bool NetworkSourceContextPreparer::prepareSourceContext(SourceContextType *sourceContext,
-                                                        const FormData &preparingData,
-                                                        const uint8_t curStep)
+bool NetworkSourceContextPreparer::processGottenAdditionalInputData(const FormData &gottenParams)
 {
+    auto curPreparing = std::move(m_preparingBuffers.front());
+    
+    m_preparingBuffers.pop();
+    
+    switch (curPreparing.m_contextPtr->getType()) {
+    case AppContext::SourceType::ST_TELEGRAM: return prepareSourceContext(dynamic_cast<SourceContextTelegram*>(curPreparing.m_contextPtr), gottenParams, curPreparing.m_curPreparingStep + 1);
+    case AppContext::SourceType::ST_VK:       return prepareSourceContext(dynamic_cast<SourceContextVK*>(curPreparing.m_contextPtr), gottenParams, curPreparing.m_curPreparingStep + 1);
+    }
+    
     return true;
+}
+
+bool NetworkSourceContextPreparer::isPreparationBufferEmpty() const
+{
+    return m_preparingBuffers.empty();
 }
