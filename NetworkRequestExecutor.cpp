@@ -43,7 +43,7 @@ void NetworkRequestExecutor::waitForResponse(QNetworkReply *reply)
 {
     QEventLoop eventLoop{};
     
-    QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::exit);
+    QObject::connect(reply, &QNetworkReply::finished, &eventLoop, [&](){eventLoop.quit();});
     
     eventLoop.exec();
 }

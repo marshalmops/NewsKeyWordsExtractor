@@ -55,7 +55,7 @@ void NetworkCore::receiveData()
     std::vector<RawNewsDataBase> data{};
     
     for (auto i = sources->begin(); i != sources->end(); ++i) {
-        if (!m_sourcePreparer->prepareSource(&(*i))) {
+        if (!m_sourcePreparer->prepareSource((*i).get())) {
             emit errorOccured(Error{"Source preparing error!", true});
             
             return;
@@ -63,7 +63,7 @@ void NetworkCore::receiveData()
         
         QNetworkRequest newRequest{};
         
-        if (!m_requestCreator->createRequestForSource(&(*i), newRequest)) {
+        if (!m_requestCreator->createRequestForSource((*i).get(), newRequest)) {
             emit errorOccured(Error{"Requests creating error!", true});
             
             return;
@@ -77,7 +77,7 @@ void NetworkCore::receiveData()
             return;
         }
         
-        RawNewsDataBase newData{SourceDictionary::getSourceType(&(*i)), newDataBytes};
+        RawNewsDataBase newData{SourceDictionary::getSourceType((*i).get()), newDataBytes};
     
         data.push_back(newData);
     }

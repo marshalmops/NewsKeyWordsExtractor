@@ -38,6 +38,8 @@ SOURCES += \
     SourceContextVK.cpp \
     SourceDictionary.cpp \
     SourceListModel.cpp \
+    SourceListModelRSS.cpp \
+    SourceListModelTelegram.cpp \
     SourceListWidget.cpp \
     SourceStandardRSS.cpp \
     SourceTelegram.cpp \
@@ -80,6 +82,8 @@ HEADERS += \
     SourceContextVK.h \
     SourceDictionary.h \
     SourceListModel.h \
+    SourceListModelRSS.h \
+    SourceListModelTelegram.h \
     SourceListWidget.h \
     SourceStandardRSS.h \
     SourceTelegram.h \

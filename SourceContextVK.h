@@ -13,7 +13,7 @@ public:
     constexpr static const char* C_VERSION_PROPERTY = "V";
     constexpr static const float C_VK_API_VERSION   = 5.131;
     
-    SourceContextVK(const AppContext::Token &token);
+    SourceContextVK(const AppContext::Token &token = AppContext::Token{});
     
     const AppContext::Token& getToken() const;
     

@@ -21,6 +21,8 @@
 #include "FormTemplate.h"
 
 #include "SourceListWidget.h"
+#include "SourceListModelRSS.h"
+#include "SourceListModelTelegram.h"
 
 class AppView : public QDialog
 {
@@ -76,8 +78,8 @@ private:
     void changeLoadingState(bool isLoading = false);
     
 private:
-    SourceListWidget<SourceStandardRSS> *m_rssSourcesList;
-    SourceListWidget<SourceTelegram>    *m_telegramSourcesList;
+    SourceListWidget *m_rssSourcesList;
+    SourceListWidget *m_telegramSourcesList;
     
     QPushButton *m_setTelegramContextButton;
     QPushButton *m_setVKContextButton;

@@ -11,9 +11,9 @@ public:
     constexpr static const char* C_TELEGRAM_API_URL    = "https://api.telegram.org/bot%1/channels.getMessages";
     constexpr static const char* C_CHANNEL_ID_PROPERTY = "channel";
     
-    SourceContextTelegram(const AppContext::Id apiId,
-                          const AppContext::Token &apiHash,
-                          const AppContext::Phone &phone);
+    SourceContextTelegram(const AppContext::Id apiId = 0,
+                          const AppContext::Token &apiHash = AppContext::Token{},
+                          const AppContext::Phone &phone = AppContext::Phone{});
     
     AppContext::Id           getApiId  () const;
     const AppContext::Token& getApiHash() const;

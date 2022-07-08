@@ -8,12 +8,12 @@
 
 #include "SourceListModel.h"
 
-template<class SourceType>
 class SourceListWidget : public QListView
 {
     Q_OBJECT
 public:
-    explicit SourceListWidget(QWidget *parent = nullptr);
+    explicit SourceListWidget(SourceListModel *model,
+                              QWidget *parent = nullptr);
     
     AppContext::Id getLastSelectedSourceId() const;
     
@@ -25,7 +25,7 @@ protected slots:
     void selectedSourceChanged();
     
 private:
-    SourceListModel<SourceType> *m_modelPtr;
+    SourceListModel *m_modelPtr;
     
     int m_lastSelectedItemIndex;
 };

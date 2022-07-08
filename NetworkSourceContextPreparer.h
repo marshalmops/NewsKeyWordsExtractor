@@ -18,6 +18,8 @@
 
 class NetworkSourceContextPreparer : public QObject
 {
+    Q_OBJECT
+    
     struct ContextPreparingBuffer {
         SourceDictionary::SourceType m_type;
         uint8_t                      m_preparingStepNumb;

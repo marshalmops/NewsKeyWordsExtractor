@@ -5,9 +5,7 @@ bool ParserDictionary::parseData(const RawNewsDataBase &data,
 {
     auto parser = getParserBySourceType(data.getSourceType());
     
-    news = parser->parseData(data);
-    
-    return !news.empty();
+    return parser->parseData(data, news);
 }
 
 std::unique_ptr<NewsParserBase> ParserDictionary::getParserBySourceType(const SourceDictionary::SourceType sourceType)

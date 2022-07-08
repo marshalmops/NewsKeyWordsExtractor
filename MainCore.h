@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QMessageBox>
 
-#include "AppContext.h"
-
 #include "FileManager.h"
 
 #include "MainCoreWorker.h"

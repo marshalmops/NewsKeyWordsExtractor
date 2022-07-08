@@ -34,7 +34,7 @@ bool SourceDictionary::createNewSourceFromBytes(const SourceType type,
     if (!source->fromByteArray(data)) return false;
     
     source->setId(m_sources->size());
-    m_sources->push_back(std::move(*source.release()));
+    m_sources->push_back(std::shared_ptr<SourceBase>(source.release()));
     
     return true;
 }
@@ -98,7 +98,7 @@ bool SourceDictionary::createNewSource(std::unique_ptr<SourceBase> &&source)
     }
     
     source->setId(m_sources->size());
-    m_sources->push_back(std::move(*source));
+    m_sources->push_back(std::shared_ptr<SourceBase>(source.release()));
     
     return true;
 }
@@ -138,7 +138,7 @@ bool SourceDictionary::deleteSourceById(const AppContext::Id id)
     return true;
 }
 
-const std::shared_ptr<std::vector<SourceBase>> &SourceDictionary::getSources()
+const std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>> &SourceDictionary::getSources()
 {
     return m_sources;
 }
@@ -158,7 +158,7 @@ std::shared_ptr<SourceContextInterface> SourceDictionary::getSourceContext(const
     return std::shared_ptr<SourceContextInterface>{nullptr};
 }
 
-std::vector<SourceBase>::iterator SourceDictionary::getSourceIteratorById(const AppContext::Id id)
+std::vector<std::shared_ptr<SourceBase>>::iterator SourceDictionary::getSourceIteratorById(const AppContext::Id id)
 {
     auto curIndex{0};
     
@@ -171,7 +171,7 @@ std::vector<SourceBase>::iterator SourceDictionary::getSourceIteratorById(const 
     return m_sources->end();
 }
 
-std::vector<SourceBase>::iterator SourceDictionary::getSourceIteratorByType(const SourceType sourceType)
+std::vector<std::shared_ptr<SourceBase>>::iterator SourceDictionary::getSourceIteratorByType(const SourceType sourceType)
 {
     for (auto i = m_sources->begin(); i != m_sources->end(); ++i) {
         if (getSourceType(&(*i)) == sourceType) return i;

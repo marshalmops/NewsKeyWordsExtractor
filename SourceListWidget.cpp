@@ -1,34 +1,32 @@
 #include "SourceListWidget.h"
 
-template<class SourceType>
-SourceListWidget<SourceType>::SourceListWidget(QWidget *parent)
+SourceListWidget::SourceListWidget(SourceListModel *model,
+                                   QWidget *parent)
     : QListView{parent},
-      m_modelPtr{new SourceListModel{this}}
+      m_modelPtr{model}
 {
+    m_modelPtr->setParent(this);
+    
     setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     setModel(m_modelPtr);
 }
 
-template<class SourceType>
-AppContext::Id SourceListWidget<SourceType>::getLastSelectedSourceId() const
+AppContext::Id SourceListWidget::getLastSelectedSourceId() const
 {
     return m_modelPtr->getSourceIdByRow(m_lastSelectedItemIndex);
 }
 
-template<class SourceType>
-bool SourceListWidget<SourceType>::removeLastSelectedSourceRow()
+bool SourceListWidget::removeLastSelectedSourceRow()
 {
     return m_modelPtr->removeRows(m_lastSelectedItemIndex, 1);
 }
 
-template<class SourceType>
-bool SourceListWidget<SourceType>::insertSourceRow()
+bool SourceListWidget::insertSourceRow()
 {
     return m_modelPtr->insertRows(m_modelPtr->rowCount(), 1);
 }
 
-template<class SourceType>
-void SourceListWidget<SourceType>::selectedSourceChanged()
+void SourceListWidget::selectedSourceChanged()
 {
     m_lastSelectedItemIndex = currentIndex().row();
 }

@@ -41,20 +41,20 @@ public:
     template<class T>
     static SourceType getSourceContextType(T* source);
     
-    static const std::shared_ptr<std::vector<SourceBase>>& getSources();
+    static const std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>>& getSources();
     static const std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>>& getSourcesContexts();
     
 private:
     static std::shared_ptr<SourceContextInterface> getSourceContext(const SourceType sourceType);
-    static std::vector<SourceBase>::iterator getSourceIteratorById(const AppContext::Id id);
-    static std::vector<SourceBase>::iterator getSourceIteratorByType(const SourceType sourceType);
+    static std::vector<std::shared_ptr<SourceBase>>::iterator getSourceIteratorById(const AppContext::Id id);
+    static std::vector<std::shared_ptr<SourceBase>>::iterator getSourceIteratorByType(const SourceType sourceType);
     
 private:
-    static std::shared_ptr<std::vector<SourceBase>> m_sources;
+    static std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>>             m_sources;
     static std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>> m_sourcesContexts;
 };
 
-std::shared_ptr<std::vector<SourceBase>> SourceDictionary::m_sources = std::make_shared<std::vector<SourceBase>>();
+std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>> SourceDictionary::m_sources = std::make_shared<std::vector<std::shared_ptr<SourceBase>>>();
 std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>> SourceDictionary::m_sourcesContexts = std::make_shared<std::vector<std::shared_ptr<SourceContextInterface>>>();
 
 #endif // SOURCEDICTIONARY_H

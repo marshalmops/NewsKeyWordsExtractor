@@ -38,7 +38,7 @@ AppView::AppView(QWidget *parent)
     rssSourcesButtonsLayout->addWidget(m_addRSSSourceButton);
     rssSourcesButtonsLayout->addWidget(m_removeRSSSourceButton);
             
-    m_rssSourcesList = new SourceListWidget<SourceStandardRSS>{};
+    m_rssSourcesList = new SourceListWidget{new SourceListModelRSS{}};
     
     QVBoxLayout *rssSourcesLayout = new QVBoxLayout{};
     
@@ -53,7 +53,7 @@ AppView::AppView(QWidget *parent)
     telegramSourcesButtonsLayout->addWidget(m_addTelegramSourceButton);
     telegramSourcesButtonsLayout->addWidget(m_removeTelegramSourceButton);
             
-    m_telegramSourcesList = new SourceListWidget<SourceTelegram>{};
+    m_telegramSourcesList = new SourceListWidget{new SourceListModelTelegram{}};
     
     QVBoxLayout *telegramSourcesLayout = new QVBoxLayout{};
     
@@ -80,6 +80,10 @@ AppView::AppView(QWidget *parent)
     
     setLayout(mainLayout);
     setWindowTitle(tr("News key words extractor"));
+    
+    // FIXME: telegram blocking:
+    
+    m_setTelegramContextButton->setEnabled(false);
 }
 
 void AppView::addRSSSource()

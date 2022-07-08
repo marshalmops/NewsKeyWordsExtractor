@@ -6,7 +6,7 @@ bool AppInitializer::initializeApp(QApplication &app,
                                    std::unique_ptr<NetworkCore> &networkCore,
                                    std::shared_ptr<FileManager> &fileManager)
 {
-    fileManager = std::make_shared<FileManager>();
+    fileManager = std::make_shared<FileManager>(std::make_shared<SourcesFileManager>());
     
     if (!fileManager->getSourcesFileManager()->loadSourcesContexts()) {
         // no saved contexts or error occurance...

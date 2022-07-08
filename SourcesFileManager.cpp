@@ -11,7 +11,7 @@ bool SourcesFileManager::saveSources(const QString &filename)
     QByteArray     sourcesBytes{};
     
     for (auto i = sources->begin(); i != sources->end(); ++i)
-        sourcesBytes += (QByteArray::number(SourceDictionary::getSourceType(&(*i))) + i->toByteArray() + C_SOURCES_SEPARATOR);
+        sourcesBytes += (QByteArray::number(SourceDictionary::getSourceType(&(*i))) + (*i)->toByteArray() + C_SOURCES_SEPARATOR);
     
     if (file.write(sourcesBytes) != sourcesBytes.length()) return false;
     
