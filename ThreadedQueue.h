@@ -13,11 +13,13 @@ public:
     void pushItem(T&& item);
     bool takeItem(T& item);
     
+    bool isEmpty() const;
+    
 private:
     std::queue<T> m_queue;
     
-    std::mutex m_frontMutex;
-    std::mutex m_backMutex;
+    mutable std::mutex m_frontMutex;
+    mutable std::mutex m_backMutex;
 };
 
 #endif // THREADEDQUEUE_H

@@ -5,6 +5,7 @@
 #include <vector>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonDocument>
 
 #include "AppContext.h"
 
@@ -29,7 +30,7 @@ public:
     bool incrementValueOfKey(const QString &key,
                              std::shared_ptr<ThreadedTransactionData> transactionData = nullptr);
     
-    QJsonObject&& toJson() const;
+    QJsonDocument toJson() const;
     
 private:
     bool searchIteration(const QString &key,

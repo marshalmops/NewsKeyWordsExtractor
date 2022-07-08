@@ -1,7 +1,7 @@
 #include "FileManager.h"
 
-FileManager::FileManager(const std::shared_ptr<SourcesFileManager> &settingsManager)
-    : m_settingsManager{settingsManager}
+FileManager::FileManager(const std::shared_ptr<SourcesFileManager> &sourcesFileManager)
+    : m_sourcesFileManager{sourcesFileManager}
 {
     
 }
@@ -18,7 +18,7 @@ bool FileManager::saveJson(const QJsonDocument &jsonData,
     return file.write(jsonBytes) == jsonBytes.length();
 }
 
-std::shared_ptr<SourcesFileManager> FileManager::getSettingsFileManager()
+std::shared_ptr<SourcesFileManager> FileManager::getSourcesFileManager()
 {
-    return m_settingsManager;
+    return m_sourcesFileManager;
 }

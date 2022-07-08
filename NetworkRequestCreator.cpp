@@ -1,16 +1,21 @@
 #include "NetworkRequestCreator.h"
 
-NetworkRequestCreator::NetworkRequestCreator(std::unique_ptr<NetworkSourceContextPreparer> &&sourcePreparer)
-    : m_sourcePreparer{sourcePreparer.release()}
+NetworkRequestCreator::NetworkRequestCreator(const std::shared_ptr<NetworkSourceContextPreparer> &sourcePreparer)
+    : m_sourcePreparer{sourcePreparer}
 {
     
 }
 
+//bool NetworkRequestCreator::processAdditionalDataForPreparing(const std::vector<std::pair<QString, QString> > &gottenParams)
+//{
+//    return m_sourcePreparer->processGottenAdditionalData(gottenParams);
+//}
+
 bool NetworkRequestCreator::checkSourcePreparation(SourceBase *source)
 {
     if (!source) return false;
-    if (!m_sourcePreparer->prepareSourceContext(source->getContext().get())) return false;
-    if (!m_sourcePreparer->prepareSource(source)) return false;
+    if (!source->getContext()->isPrepared()) return false;
+    if (!source->isPrepared()) return false;
     
     return true;
 }
@@ -30,7 +35,7 @@ template<>
 bool NetworkRequestCreator::createRequestForSource<SourceTelegram>(SourceTelegram *source,
                                                                    QNetworkRequest &request)
 {
-    checkSourcePreparation(source);
+    if (!checkSourcePreparation(source)) return false;
     
     auto context = source->getContext(); 
     auto telegramContext = dynamic_cast<SourceContextTelegram*>(context.get()); // FIXME: not clear
@@ -48,7 +53,7 @@ template<>
 bool NetworkRequestCreator::createRequestForSource<SourceVK>(SourceVK *source,
                                                              QNetworkRequest &request)
 {
-    checkSourcePreparation(source);
+    if (!checkSourcePreparation(source)) return false;
     
     auto context = source->getContext(); 
     auto vkContext = dynamic_cast<SourceContextVK*>(context.get()); // FIXME: not clear

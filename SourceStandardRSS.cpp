@@ -6,8 +6,9 @@ SourceStandardRSS::SourceStandardRSS()
     
 }
 
-SourceStandardRSS::SourceStandardRSS(const QUrl &url)
-    : SourceBase{url}
+SourceStandardRSS::SourceStandardRSS(const QUrl &url,
+                                     const AppContext::Id id)
+    : SourceBase{url, id}
 {
     
 }

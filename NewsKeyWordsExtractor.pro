@@ -15,6 +15,11 @@ SOURCES += \
     ConvertableToBytes.cpp \
     Error.cpp \
     FileManager.cpp \
+    FormData.cpp \
+    FormTemplate.cpp \
+    FormWidget.cpp \
+    MainCore.cpp \
+    MainCoreWorker.cpp \
     NetworkCore.cpp \
     NetworkRequestCreator.cpp \
     NetworkRequestExecutor.cpp \
@@ -25,12 +30,15 @@ SOURCES += \
     NewsParserTelegram.cpp \
     NewsParserVK.cpp \
     ParserDictionary.cpp \
+    PreparableObject.cpp \
     RawNewsDataBase.cpp \
     SourceBase.cpp \
     SourceContextInterface.cpp \
     SourceContextTelegram.cpp \
     SourceContextVK.cpp \
     SourceDictionary.cpp \
+    SourceListModel.cpp \
+    SourceListWidget.cpp \
     SourceStandardRSS.cpp \
     SourceTelegram.cpp \
     SourceVK.cpp \
@@ -49,6 +57,11 @@ HEADERS += \
     ConvertableToBytes.h \
     Error.h \
     FileManager.h \
+    FormData.h \
+    FormTemplate.h \
+    FormWidget.h \
+    MainCore.h \
+    MainCoreWorker.h \
     NetworkCore.h \
     NetworkRequestCreator.h \
     NetworkRequestExecutor.h \
@@ -59,12 +72,15 @@ HEADERS += \
     NewsParserTelegram.h \
     NewsParserVK.h \
     ParserDictionary.h \
+    PreparableObject.h \
     RawNewsDataBase.h \
     SourceBase.h \
     SourceContextInterface.h \
     SourceContextTelegram.h \
     SourceContextVK.h \
     SourceDictionary.h \
+    SourceListModel.h \
+    SourceListWidget.h \
     SourceStandardRSS.h \
     SourceTelegram.h \
     SourceVK.h \

@@ -9,8 +9,9 @@ SourceTelegram::SourceTelegram()
 }
 
 SourceTelegram::SourceTelegram(const QString &channelName,
+                               const AppContext::Id id,
                                const std::shared_ptr<SourceContextTelegram> &sourceContext)
-    : SourceBase{QString{SourceContextTelegram::C_TELEGRAM_API_URL}, sourceContext},
+    : SourceBase{QString{SourceContextTelegram::C_TELEGRAM_API_URL}, id, sourceContext},
       m_channelName{channelName},
       m_channelId{0}
 {

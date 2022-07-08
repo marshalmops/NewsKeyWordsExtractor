@@ -2,12 +2,23 @@
 
 #include "AppInitializer.h"
 
+#include "MainCore.h"
+#include "NetworkCore.h"
+#include "FileManager.h"
+
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    AppView w;
+    QApplication app(argc, argv);
+    AppView appView;
     
-    w.show();
+    std::unique_ptr<MainCore>    mainCore{};
+    std::unique_ptr<NetworkCore> networkCore{};
+    std::shared_ptr<FileManager> fileManager{};
     
-    return a.exec();
+    if (!AppInitializer::initializeApp(app, appView, mainCore, networkCore, fileManager)) 
+        return -1;
+    
+    appView.show();
+    
+    return app.exec();
 }

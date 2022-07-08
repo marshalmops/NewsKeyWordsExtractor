@@ -6,20 +6,20 @@
 
 #include "SourcesFileManager.h"
 
-class FileManager
+class FileManager : public QObject
 {
 public:
     constexpr static const char* C_DEFAULT_JSON_OUTPUT_FILENAME = "output.json";
     
-    FileManager(const std::shared_ptr<SourcesFileManager> &settingsManager);
+    FileManager(const std::shared_ptr<SourcesFileManager> &sourcesFileManager);
     
     bool saveJson(const QJsonDocument &jsonData,
                   const QString &filename = C_DEFAULT_JSON_OUTPUT_FILENAME);
     
-    std::shared_ptr<SourcesFileManager> getSettingsFileManager();
+    std::shared_ptr<SourcesFileManager> getSourcesFileManager();
     
 private:
-    std::shared_ptr<SourcesFileManager> m_settingsManager;
+    std::shared_ptr<SourcesFileManager> m_sourcesFileManager;
 };
 
 #endif // FILEMANAGER_H

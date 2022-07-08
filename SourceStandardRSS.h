@@ -7,7 +7,8 @@ class SourceStandardRSS : public SourceBase
 {
 public:
     SourceStandardRSS();
-    SourceStandardRSS(const QUrl &url);
+    SourceStandardRSS(const QUrl &url,
+                      const AppContext::Id id = 0);
     
     QByteArray toByteArray  ()                  const override;
     bool       fromByteArray(const QByteArray &bytes) override;

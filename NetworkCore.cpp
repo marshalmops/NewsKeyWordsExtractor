@@ -2,9 +2,15 @@
 
 NetworkCore::NetworkCore()
     : m_requestExecutor{std::make_shared<NetworkRequestExecutor>()},
-      m_requestCreator{std::make_unique<NetworkRequestCreator>(std::make_unique<NetworkSourceContextPreparer>(m_requestExecutor))}
+      m_sourcePreparer{std::make_shared<NetworkSourceContextPreparer>(m_requestExecutor)},
+      m_requestCreator{std::make_unique<NetworkRequestCreator>(m_sourcePreparer)}
 {
-    
+    QObject::connect(m_sourcePreparer.get(), &NetworkSourceContextPreparer::additionalInputDataRequested, this, &NetworkCore::additionalInputDataRequested);
+}
+
+NetworkCore::~NetworkCore()
+{
+    //QThread::currentThread()->quit();
 }
 
 void NetworkCore::start()
@@ -19,7 +25,27 @@ void NetworkCore::start()
 
 void NetworkCore::stop()
 {
+    //this->~NetworkCore();
+    
     QThread::currentThread()->quit();
+    QThread::currentThread()->deleteLater();
+    
+    emit stopped();
+}
+
+void NetworkCore::prepareContext()
+{
+    auto contexts = SourceDictionary::getSourcesContexts();
+    
+    for (auto i = contexts->begin(); i != contexts->end(); ++i) {
+        if (!m_sourcePreparer->prepareSourceContext((*i).get())) {
+            emit errorOccured(Error{"Source context preparing error!", true});
+            
+            return;
+        }
+    }
+    
+    if (m_sourcePreparer->isPreparationBufferEmpty()) emit contextPrepared();
 }
 
 void NetworkCore::receiveData()
@@ -29,6 +55,12 @@ void NetworkCore::receiveData()
     std::vector<RawNewsDataBase> data{};
     
     for (auto i = sources->begin(); i != sources->end(); ++i) {
+        if (!m_sourcePreparer->prepareSource(&(*i))) {
+            emit errorOccured(Error{"Source preparing error!", true});
+            
+            return;
+        }
+        
         QNetworkRequest newRequest{};
         
         if (!m_requestCreator->createRequestForSource(&(*i), newRequest)) {
@@ -51,4 +83,15 @@ void NetworkCore::receiveData()
     }
     
     emit dataReceived(data);
+}
+
+void NetworkCore::processGottenAdditionalInputData(const FormData gottenParams)
+{
+    if (!m_sourcePreparer->processGottenAdditionalInputData(gottenParams)) {
+        emit errorOccured(Error{"Additional data processing error!", true});
+        
+        return;
+    }
+    
+    if (m_sourcePreparer->isPreparationBufferEmpty()) emit contextPrepared();
 }

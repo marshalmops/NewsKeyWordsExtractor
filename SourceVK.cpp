@@ -1,13 +1,8 @@
 #include "SourceVK.h"
 
-SourceVK::SourceVK()
-    : SourceBase{}
-{
-    
-}
-
-SourceVK::SourceVK(const std::shared_ptr<SourceContextVK> &sourceContext)
-    : SourceBase{QString{SourceContextVK::C_VK_API_URL}, sourceContext}
+SourceVK::SourceVK(const AppContext::Id id,
+                   const std::shared_ptr<SourceContextVK> &sourceContext)
+    : SourceBase{QString{SourceContextVK::C_VK_API_URL}, id, sourceContext}
 {
     
 }

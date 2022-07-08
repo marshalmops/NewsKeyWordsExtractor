@@ -19,7 +19,7 @@ std::unique_lock<std::mutex> generateLock(std::mutex &mutex,
 
 template<class Value>
 ThreadedStringDictionary<Value>::ThreadedStringDictionary()
-    : //m_root {std::make_unique<ThreadedStringDictionaryItem<Value>>()},
+    : m_root {std::make_unique<ThreadedStringDictionaryItem<Value>>()},
       m_mutex{}
 {
     
@@ -89,15 +89,15 @@ bool ThreadedStringDictionary<Value>::incrementValueOfKey(const QString &key,
 }
 
 template<>
-QJsonObject&& ThreadedStringDictionary<AppContext::WordsFrequency>::toJson() const
+QJsonDocument ThreadedStringDictionary<AppContext::WordsFrequency>::toJson() const
 {
     std::unique_lock<std::mutex> lock{m_mutex};
     
-    QJsonObject jsonDictionary{};
+    QJsonObject jsonRootObj{};
     
-    toJsonIteration(*m_root, jsonDictionary);
+    toJsonIteration(*m_root, jsonRootObj);
     
-    return std::move(jsonDictionary);
+    return QJsonDocument{jsonRootObj};
 }
 
 template<class Value>

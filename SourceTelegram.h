@@ -11,7 +11,8 @@ class SourceTelegram : public SourceBase
 public:
     SourceTelegram();
     SourceTelegram(const QString &channelName,
-                   const std::shared_ptr<SourceContextTelegram> &sourceContext);
+                   const AppContext::Id id = 0,
+                   const std::shared_ptr<SourceContextTelegram> &sourceContext = std::shared_ptr<SourceContextTelegram>(nullptr));
     
     const QString& getChannelName() const;
     AppContext::Id getChannelId  () const;

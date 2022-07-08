@@ -6,6 +6,19 @@ NetworkSourceContextPreparer::NetworkSourceContextPreparer(const std::shared_ptr
     
 }
 
+bool NetworkSourceContextPreparer::processGottenAdditionalInputData(const FormData &gottenParams)
+{
+    auto curPreparing = std::move(m_preparingBuffers.front());
+    
+    m_preparingBuffers.pop();
+    
+    return prepareSourceContext(curPreparing.m_contextPtr, gottenParams, curPreparing.m_curPreparingStep + 1);
+}
+
+bool NetworkSourceContextPreparer::isPreparationBufferEmpty() const
+{
+    return m_preparingBuffers.empty();
+}
 
 template<>
 bool NetworkSourceContextPreparer::prepareSource<SourceTelegram>(SourceTelegram *source)
@@ -32,23 +45,53 @@ bool NetworkSourceContextPreparer::prepareSource(SourceType *source)
 }
 
 template<>
-bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextTelegram>(SourceContextTelegram *sourceContext)
+bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextTelegram>(SourceContextTelegram *sourceContext,
+                                                                               const FormData &preparingData,
+                                                                               const uint8_t curStep)
 {
     if (!sourceContext) return false;
     
-    // auth processing...
+    switch (curStep) {
+    case 1: {
+        NetworkSourceContextPreparer::ContextPreparingBuffer preparingBuffer{};
+        
+        preparingBuffer.m_type = SourceDictionary::SourceType::ST_TELEGRAM;
+        preparingBuffer.m_preparingStepNumb = 2;
+        preparingBuffer.m_curPreparingStep = 1;
+        preparingBuffer.m_contextPtr = sourceContext;
+        
+        m_preparingBuffers.push(preparingBuffer);
+        
+        FormTemplate neededParams{};
+        
+        neededParams.addParam("Code", QMetaType::QString);
+        
+        emit additionalInputDataRequested(neededParams);
+        
+        break;
+    }
+    case 2: {
+        // calling signIn using received CODE...
+        
+        break;
+    }
+    }
 
     return true;
 }
 
 template<>
-bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextVK>(SourceContextVK *sourceContext)
+bool NetworkSourceContextPreparer::prepareSourceContext<SourceContextVK>(SourceContextVK *sourceContext,
+                                                                         const FormData &preparingData,
+                                                                         const uint8_t curStep)
 {
     return true;
 }
 
 template<class SourceContextType>
-bool NetworkSourceContextPreparer::prepareSourceContext(SourceContextType *sourceContext)
+bool NetworkSourceContextPreparer::prepareSourceContext(SourceContextType *sourceContext,
+                                                        const FormData &preparingData,
+                                                        const uint8_t curStep)
 {
     return true;
 }

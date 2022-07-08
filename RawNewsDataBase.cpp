@@ -1,5 +1,12 @@
 #include "RawNewsDataBase.h"
 
+RawNewsDataBase::RawNewsDataBase()
+    : m_sourceType{SourceDictionary::SourceType::ST_INVALID},
+      m_data{}
+{
+    
+}
+
 RawNewsDataBase::RawNewsDataBase(const SourceDictionary::SourceType type,
                                  const QByteArray &data)
     : m_sourceType{type},

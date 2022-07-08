@@ -16,17 +16,19 @@
 class NetworkRequestCreator
 {
 public:
-    NetworkRequestCreator(std::unique_ptr<NetworkSourceContextPreparer> &&sourcePreparer);
+    NetworkRequestCreator(const std::shared_ptr<NetworkSourceContextPreparer> &sourcePreparer);
     
     template<class SourceType>
     bool createRequestForSource(SourceType *source, 
                                 QNetworkRequest &request);
     
+    bool processAdditionalDataForPreparing(const std::vector<std::pair<QString, QString>> &gottenParams);
+    
 private:
     bool checkSourcePreparation(SourceBase *source);
     
 private:
-    std::unique_ptr<NetworkSourceContextPreparer> m_sourcePreparer;
+    std::shared_ptr<NetworkSourceContextPreparer> m_sourcePreparer;
 };
 
 #endif // NETWORKREQUESTCREATOR_H

@@ -9,8 +9,8 @@
 class SourceVK : public SourceBase
 {
 public:
-    SourceVK();
-    SourceVK(const std::shared_ptr<SourceContextVK> &sourceContext);
+    SourceVK(const AppContext::Id id = 0,
+             const std::shared_ptr<SourceContextVK> &sourceContext = std::shared_ptr<SourceContextVK>(nullptr));
     
     QByteArray toByteArray  ()                  const override;
     bool       fromByteArray(const QByteArray &bytes) override;

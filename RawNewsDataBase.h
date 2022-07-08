@@ -6,6 +6,7 @@
 class RawNewsDataBase
 {
 public:
+    RawNewsDataBase();
     RawNewsDataBase(const SourceDictionary::SourceType type,
                     const QByteArray &data);
     

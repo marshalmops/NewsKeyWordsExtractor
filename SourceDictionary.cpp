@@ -5,8 +5,6 @@ bool SourceDictionary::createNewSourceFromBytes(const SourceType type,
 {
     std::unique_ptr<SourceBase> source;
     
-    // FIXME: some defence related to multiple VK sources instanciation...
-    
     switch (type) {
     case SourceType::ST_STANDARD_RSS: {
         source = std::make_unique<SourceStandardRSS>();
@@ -21,16 +19,21 @@ bool SourceDictionary::createNewSourceFromBytes(const SourceType type,
         break;
     }
     case SourceType::ST_VK: {
+        if (getSourceIteratorByType(SourceType::ST_VK) != m_sources->end())
+            return true;
+        
         source = std::make_unique<SourceVK>();
         
         if (!source->setContext(getSourceContext(type))) return false;
         
         break;
     }
+    default: return false;
     }
     
     if (!source->fromByteArray(data)) return false;
     
+    source->setId(m_sources->size());
     m_sources->push_back(std::move(*source.release()));
     
     return true;
@@ -51,8 +54,16 @@ bool SourceDictionary::createSourceContextFromBytes(const SourceType type,
     case SourceType::ST_VK: {
         sourceContext = std::make_shared<SourceContextVK>();
         
+        if (type == SourceType::ST_VK) {
+            if (getSourceIteratorByType(SourceType::ST_VK) == m_sources->end()) {
+                if (!createNewSource(std::make_unique<SourceVK>()))
+                    return false;
+            }
+        }
+        
         break;
     }
+    default: return false;
     }
     
     if (!sourceContext->fromByteArray(data)) return false;
@@ -62,7 +73,7 @@ bool SourceDictionary::createSourceContextFromBytes(const SourceType type,
     return true;
 }
 
-bool SourceDictionary::createNewSource(std::unique_ptr<SourceBase> &source)
+bool SourceDictionary::createNewSource(std::unique_ptr<SourceBase> &&source)
 {
     if (!source.get()) return false;
     
@@ -76,15 +87,53 @@ bool SourceDictionary::createNewSource(std::unique_ptr<SourceBase> &source)
         break;
     }
     case SourceType::ST_VK: {
-        // uniqueness checking...
+        if (getSourceIteratorByType(SourceType::ST_VK) != m_sources->end())
+            return true;
         
         if (!source->setContext(getSourceContext(sourceType))) return false;
         
         break;
     }
+    default: return false;
     }
     
+    source->setId(m_sources->size());
     m_sources->push_back(std::move(*source));
+    
+    return true;
+}
+
+bool SourceDictionary::createSourceContext(std::unique_ptr<SourceContextInterface> &&sourceContext)
+{
+    if (!sourceContext.get()) return false;
+    
+    auto sourceContextType = getSourceContextType(sourceContext.get());
+    auto prevSourceContext = getSourceContext(sourceContextType);
+    
+    if (!prevSourceContext.get()) {
+        m_sourcesContexts->push_back(std::shared_ptr<SourceContextInterface>(sourceContext.release()));
+    } else
+        *(prevSourceContext.get()) = *(sourceContext.release());
+    
+    if (sourceContextType == SourceType::ST_VK) {
+        if (getSourceIteratorByType(SourceType::ST_VK) == m_sources->end()) {
+            if (!createNewSource(std::make_unique<SourceVK>()))
+                return false;
+        }
+    }
+    
+    return true;
+}
+
+bool SourceDictionary::deleteSourceById(const AppContext::Id id)
+{
+    if (id <= 0) return false;
+    
+    auto itemToDeleteIter = getSourceIteratorById(id);
+    
+    if (itemToDeleteIter == m_sources->end()) return false;
+    
+    m_sources->erase(itemToDeleteIter);
     
     return true;
 }
@@ -107,6 +156,28 @@ std::shared_ptr<SourceContextInterface> SourceDictionary::getSourceContext(const
     }
     
     return std::shared_ptr<SourceContextInterface>{nullptr};
+}
+
+std::vector<SourceBase>::iterator SourceDictionary::getSourceIteratorById(const AppContext::Id id)
+{
+    auto curIndex{0};
+    
+    for (auto i = m_sources->begin(); i != m_sources->end(); ++i) {
+        if (curIndex == id) return i;
+        
+        ++curIndex;
+    }
+    
+    return m_sources->end();
+}
+
+std::vector<SourceBase>::iterator SourceDictionary::getSourceIteratorByType(const SourceType sourceType)
+{
+    for (auto i = m_sources->begin(); i != m_sources->end(); ++i) {
+        if (getSourceType(&(*i)) == sourceType) return i;
+    }
+    
+    return m_sources->end();
 }
 
 template<>

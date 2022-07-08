@@ -4,8 +4,11 @@
 #include <QByteArray>
 
 #include "ConvertableToBytes.h"
+#include "PreparableObject.h"
 
-class SourceContextInterface : public ConvertableToBytes
+class SourceContextInterface
+        : public ConvertableToBytes,
+          public PreparableObject
 {
 protected:
     constexpr static const char C_PARAMS_SEPARATOR = ';';

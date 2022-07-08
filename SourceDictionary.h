@@ -19,7 +19,8 @@ class SourceDictionary
 {
 public:
     enum SourceType : uint8_t {
-        ST_STANDARD_RSS = 0,
+        ST_INVALID = 0,
+        ST_STANDARD_RSS,
         ST_TELEGRAM,
         ST_VK
     };
@@ -30,7 +31,10 @@ public:
                                          const QByteArray &data);
     static bool createSourceContextFromBytes(const SourceType type,
                                              const QByteArray &data);
-    static bool createNewSource(std::unique_ptr<SourceBase> &source);
+    static bool createNewSource(std::unique_ptr<SourceBase> &&source);
+    static bool createSourceContext(std::unique_ptr<SourceContextInterface> &&sourceContext);
+    
+    static bool deleteSourceById(const AppContext::Id id);
     
     template<class T>
     static SourceType getSourceType(T* source);
@@ -42,6 +46,8 @@ public:
     
 private:
     static std::shared_ptr<SourceContextInterface> getSourceContext(const SourceType sourceType);
+    static std::vector<SourceBase>::iterator getSourceIteratorById(const AppContext::Id id);
+    static std::vector<SourceBase>::iterator getSourceIteratorByType(const SourceType sourceType);
     
 private:
     static std::shared_ptr<std::vector<SourceBase>> m_sources;

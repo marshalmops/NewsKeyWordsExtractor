@@ -31,3 +31,12 @@ bool ThreadedQueue<T>::takeItem(T &item)
     
     return true;
 }
+
+template<class T>
+bool ThreadedQueue<T>::isEmpty() const
+{
+    std::unique_lock<std::mutex> lockFront{m_frontMutex};
+    std::unique_lock<std::mutex> lockBack {m_backMutex};
+    
+    return m_queue.empty();
+}
