@@ -9,6 +9,8 @@ SourceListWidget::SourceListWidget(SourceListModel *model,
     
     setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     setModel(m_modelPtr);
+    
+    connect(this, &QListView::clicked, this, &SourceListWidget::selectedSourceChanged);
 }
 
 AppContext::Id SourceListWidget::getLastSelectedSourceId() const
@@ -26,7 +28,7 @@ bool SourceListWidget::insertSourceRow()
     return m_modelPtr->insertRows(m_modelPtr->rowCount(), 1);
 }
 
-void SourceListWidget::selectedSourceChanged()
+void SourceListWidget::selectedSourceChanged(QModelIndex newIndex)
 {
-    m_lastSelectedItemIndex = currentIndex().row();
+    m_lastSelectedItemIndex = newIndex.row();
 }

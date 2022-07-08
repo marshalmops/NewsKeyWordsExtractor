@@ -31,7 +31,7 @@ bool SourceListModel::insertRows(int row,
                                  int count, 
                                  const QModelIndex &parent)
 {
-    if (parent.isValid() || row >= rowCount()) return false;
+    if (parent.isValid() || row > rowCount()) return false;
     
     emit beginInsertRows(parent, row, row + count - 1);
     emit endInsertRows();
@@ -43,7 +43,7 @@ bool SourceListModel::removeRows(int row,
                                  int count,
                                  const QModelIndex &parent)
 {
-    if (parent.isValid() || row >= rowCount()) return false;
+    if (parent.isValid() || row > rowCount()) return false;
     
     emit beginRemoveRows(parent, row, row + count - 1);
     emit endRemoveRows();
@@ -53,7 +53,7 @@ bool SourceListModel::removeRows(int row,
 
 AppContext::Id SourceListModel::getSourceIdByRow(const int row) const
 {
-    QVariant sourceIdVariant = data(index(row, 0));
+    QVariant sourceIdVariant = data(index(row, 0), SourceListModel::SourceListModelRoles::SLMR_SOURCE_ID);
     
     if (sourceIdVariant.isNull()) return 0;
     

@@ -56,7 +56,7 @@ void FormWidget::accept()
         auto curValue = generateVariantofStringByMetaType(rawDataStr, templateItem.second);
     
         if (curValue.isNull()) {
-            QDialog::reject();
+            QDialog::done(-1);
             
             return;
         }
@@ -86,7 +86,7 @@ QLineEdit *FormWidget::generateInputWidgetByMetaType(const QMetaType::Type type)
         break;
     }
     case QMetaType::Type::QUrl: {
-        newValidator = new QRegularExpressionValidator{QRegularExpression{"https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"}};
+        newValidator = new QRegularExpressionValidator{QRegularExpression{"((http|https|ftp)://|(www)\\.)(\\w+)(\\.?[\\.a-z0-9/:?%&=\\-_+#;]*)"}};
         
         break;
     }
@@ -110,7 +110,11 @@ QVariant FormWidget::generateVariantofStringByMetaType(const QString &str,
     case QMetaType::Type::LongLong:  return QVariant{str.toLongLong()};
     case QMetaType::Type::ULong:
     case QMetaType::Type::ULongLong: return QVariant{str.toULongLong()};
-    case QMetaType::Type::QUrl:      return QVariant{QUrl{str}};
+    case QMetaType::Type::QUrl: {
+        if (!QRegularExpression{"((http|https|ftp)://|(www)\\.)(\\w+)(\\.?[\\.a-z0-9/:?%&=\\-_+#;]*)"}.match(str).hasMatch()) return QVariant{};
+        
+        return QVariant{QUrl{str, QUrl::ParsingMode::StrictMode}};
+    }
     default:                         return QVariant{str};
     }
     

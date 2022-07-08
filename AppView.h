@@ -92,6 +92,8 @@ private:
     
     QPushButton *m_preparingButton;
     QPushButton *m_gettingButton;
+    
+    bool m_isPrepared;
 };
 
 #endif // APPVIEW_H

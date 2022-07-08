@@ -22,7 +22,7 @@ public slots:
     bool insertSourceRow();
     
 protected slots:
-    void selectedSourceChanged();
+    void selectedSourceChanged(QModelIndex newIndex);
     
 private:
     SourceListModel *m_modelPtr;

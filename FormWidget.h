@@ -18,6 +18,8 @@ class FormWidget : public QDialog
 {
     Q_OBJECT
 public:
+    constexpr static const int C_ERROR_OCCURED = -1;
+    
     explicit FormWidget(const FormTemplate &formTemplate,
                         FormData &formData,
                         QWidget *parent = nullptr);

@@ -1,7 +1,8 @@
 #include "AppView.h"
 
 AppView::AppView(QWidget *parent)
-    : QDialog{parent}
+    : QDialog{parent},
+      m_isPrepared{false}
 {
     QLabel *telegramContextSettingLabel = new QLabel{tr("Telegram setting")};
     
@@ -72,11 +73,16 @@ AppView::AppView(QWidget *parent)
     m_preparingButton = new QPushButton{tr("Prepare")};
     m_gettingButton   = new QPushButton{tr("Get data")};
     
+    QHBoxLayout *buttonsLayout = new QHBoxLayout{};
+    
+    buttonsLayout->addWidget(m_preparingButton);
+    buttonsLayout->addWidget(m_gettingButton);
+    
     QVBoxLayout *mainLayout = new QVBoxLayout{};
     
     mainLayout->addWidget(contextSettingBox);
     mainLayout->addWidget(sourcesBox);
-    mainLayout->addLayout(mainLayout);
+    mainLayout->addLayout(buttonsLayout);
     
     setLayout(mainLayout);
     setWindowTitle(tr("News key words extractor"));
@@ -87,6 +93,11 @@ AppView::AppView(QWidget *parent)
     connect(m_addTelegramSourceButton,    &QPushButton::clicked, this, &AppView::addTelegramSource);
     connect(m_removeRSSSourceButton,      &QPushButton::clicked, this, &AppView::deleteRSSSource);
     connect(m_removeTelegramSourceButton, &QPushButton::clicked, this, &AppView::deleteTelegramSource);
+    
+    m_gettingButton->setEnabled(false);
+    
+    m_addTelegramSourceButton->setEnabled(false);
+    m_removeTelegramSourceButton->setEnabled(false);
     
     // FIXME: telegram blocking:
     
@@ -139,6 +150,12 @@ void AppView::addTelegramSource()
 
 void AppView::deleteRSSSource()
 {
+    if (!m_rssSourcesList->currentIndex().isValid()) {
+        QMessageBox::warning(this, tr("Error"), tr("Choose the source to delete!"));
+        
+        return;
+    }
+    
     changeLoadingState(true);
     
     emit rssSourceDeleted(m_rssSourcesList->getLastSelectedSourceId());
@@ -146,6 +163,12 @@ void AppView::deleteRSSSource()
 
 void AppView::deleteTelegramSource()
 {
+    if (!m_rssSourcesList->currentIndex().isValid()) {
+        QMessageBox::warning(this, tr("Error"), tr("Choose the source to delete!"));
+        
+        return;
+    }
+    
     changeLoadingState(true);
     
     emit rssSourceDeleted(m_telegramSourcesList->getLastSelectedSourceId());
@@ -259,14 +282,23 @@ void AppView::startContextPreparing()
 
 void AppView::endContextPreparing()
 {
+    m_isPrepared = true;
+    
     changeLoadingState(false);
+    m_gettingButton->setEnabled(true);
 }
 
 bool AppView::getFormDataWithTemplate(const FormTemplate &formTemplate,
                                       FormData &formData)
 {
-    if (FormWidget{formTemplate, formData}.exec() != QDialog::Accepted)
+    switch (FormWidget{formTemplate, formData}.exec()) {
+    case QDialog::Rejected: return false;
+    case FormWidget::C_ERROR_OCCURED: {
+        QMessageBox::warning(this, tr("Error"), tr("Provided data is incorrect!"));
+        
         return false;
+    }
+    }
     
     if (formData.getData().length() != formTemplate.getTemplateData().length()) {
         QMessageBox::warning(this, tr("Error"), tr("Provided data is not full!"));
@@ -285,8 +317,8 @@ void AppView::changeLoadingState(bool isLoading)
     m_setVKContextButton->setEnabled(!isLoading);
     m_addRSSSourceButton->setEnabled(!isLoading);
     m_removeRSSSourceButton->setEnabled(!isLoading);
-    m_addTelegramSourceButton->setEnabled(!isLoading);
-    m_removeTelegramSourceButton->setEnabled(!isLoading);
+    m_addTelegramSourceButton->setEnabled(!isLoading && m_isPrepared);
+    m_removeTelegramSourceButton->setEnabled(!isLoading && m_isPrepared);
     m_preparingButton->setEnabled(!isLoading);
     m_gettingButton->setEnabled(!isLoading);
 }
