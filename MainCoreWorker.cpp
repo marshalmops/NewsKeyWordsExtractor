@@ -1,4 +1,4 @@
-#include "MainCoreWorker.h"
+﻿#include "MainCoreWorker.h"
 
 MainCoreWorker::MainCoreWorker(const std::shared_ptr<ThreadedStringDictionary<AppContext::WordsFrequency> > &dictionary, 
                                const std::shared_ptr<ThreadedQueue<RawNewsDataBase> > &rawNews, 
@@ -6,11 +6,12 @@ MainCoreWorker::MainCoreWorker(const std::shared_ptr<ThreadedStringDictionary<Ap
     : QObject{parent},
       m_dictionary{dictionary},
       m_rawNewsQueue{rawNews},
-      m_textKeyWordsExtractor{std::make_unique<TextKeyWordsExtractor>()}
+      m_textKeyWordsExtractor{std::make_unique<TextKeyWordsExtractor>()},
+      m_execThread{nullptr},
+      m_isRunning{false}
 {
     
 }
-
 MainCoreWorker::~MainCoreWorker()
 {
     //QThread::currentThread()->quit();
@@ -20,12 +21,11 @@ void MainCoreWorker::start()
 {
     auto *dispatcher = QThread::currentThread()->eventDispatcher();
     
-    while (true) {
-        if (!dispatcher->processEvents(QEventLoop::ProcessEventsFlag::AllEvents)) {
-            emit errorOccured(Error{"Event processing error!", true});
-            
-            continue;
-        }
+    m_execThread.reset(QThread::currentThread());
+    m_isRunning = true;
+    
+    while (m_isRunning) {
+        dispatcher->processEvents(QEventLoop::ProcessEventsFlag::AllEvents);
         
         RawNewsDataBase newRawNews{};
         
@@ -51,9 +51,9 @@ void MainCoreWorker::start()
 
 void MainCoreWorker::stop()
 {
-    //this->~MainCoreWorker();
-    QThread::currentThread()->quit();
-    QThread::currentThread()->deleteLater();
+    m_isRunning = false;
             
     emit stopped();
+    
+    QThread::currentThread()->quit();
 }

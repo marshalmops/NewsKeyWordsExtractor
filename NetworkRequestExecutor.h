@@ -11,7 +11,7 @@
 class NetworkRequestExecutor
 {
 public:
-    NetworkRequestExecutor();
+    NetworkRequestExecutor(QObject *networkManagerParent = nullptr);
     
     bool executeGetRequest(const QNetworkRequest &request,
                            QByteArray &reply);

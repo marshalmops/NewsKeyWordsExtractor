@@ -1,6 +1,8 @@
 #ifndef RAWNEWSDATABASE_H
 #define RAWNEWSDATABASE_H
 
+#include <QMetaType>
+
 #include "AppContext.h"
 
 class RawNewsDataBase
@@ -17,5 +19,7 @@ private:
     AppContext::SourceType m_sourceType;
     QByteArray             m_data;
 };
+
+Q_DECLARE_METATYPE(RawNewsDataBase)
 
 #endif // RAWNEWSDATABASE_H

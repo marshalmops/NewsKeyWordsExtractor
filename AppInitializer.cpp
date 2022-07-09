@@ -16,7 +16,9 @@ bool AppInitializer::initializeApp(QApplication &app,
         }
     }
     
-    mainCore    = std::make_unique<MainCore>(fileManager, QThread::idealThreadCount() - 1);
+    auto usedOtherThreadsCount = QThread::idealThreadCount() - 1;
+    
+    mainCore    = std::make_unique<MainCore>(fileManager, usedOtherThreadsCount);
     networkCore = std::make_unique<NetworkCore>();
     
     // signals / slots:
@@ -57,11 +59,23 @@ bool AppInitializer::initializeApp(QApplication &app,
     QObject::connect(mainCore.get(), &MainCore::telegramSourceDeleted,        &appView, &AppView::deleteTelegramSourceRow);
     QObject::connect(mainCore.get(), &MainCore::additionalInputDataRequested, &appView, &AppView::getFormDataByTemplate);
     QObject::connect(mainCore.get(), &MainCore::networkContextPrepared,       &appView, &AppView::endContextPreparing);
+    QObject::connect(mainCore.get(), &MainCore::dataReceived,                 &appView, &AppView::endDataGetting);    
     
     //
     
     QObject::connect(&app, &QApplication::lastWindowClosed, mainCore.get(), &MainCore::processClose);
     
+    // Launching:
+    
+    QThread *networkThread = new QThread{};
+    
+    networkCore->moveToThread(networkThread);
+    
+    QObject::connect(networkThread, &QThread::started, networkCore.get(), &NetworkCore::start);
+    
+    networkThread->start();
+    
+    mainCore->launchWorkers(usedOtherThreadsCount - 1);
     
     return true;
 }

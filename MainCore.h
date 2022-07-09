@@ -35,6 +35,8 @@ signals:
     
     // to AppView:
     
+    void dataReceived();
+    
     void rssSourceAdded     ();
     void telegramSourceAdded();
     
@@ -73,6 +75,7 @@ public slots:
     
     void prepareGettingContext();
     void endGettingContextPreparing();
+    
     void processClose();
     
     void processStop();

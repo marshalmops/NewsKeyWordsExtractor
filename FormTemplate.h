@@ -20,4 +20,6 @@ private:
     QVector<TemplateParam> m_template;
 };
 
+Q_DECLARE_METATYPE(FormTemplate)
+
 #endif // FORMTEMPLATE_H

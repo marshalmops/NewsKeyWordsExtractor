@@ -115,16 +115,32 @@ bool SourceDictionary::createSourceContext(std::unique_ptr<SourceContextInterfac
     
     if (!prevSourceContext.get()) {
         m_sourcesContexts->push_back(std::shared_ptr<SourceContextInterface>(sourceContext.release()));
-    } else
-        *(prevSourceContext.get()) = *(sourceContext.release());
-    
-    if (sourceContextType == AppContext::SourceType::ST_VK) {
-        if (getSourceIteratorByType(AppContext::SourceType::ST_VK) == m_sources->end()) {
-            if (!createNewSource(std::make_unique<SourceVK>()))
-                return false;
+    } else {
+        switch (sourceContextType) {
+        case AppContext::SourceType::ST_TELEGRAM: {
+            auto telegramContext = dynamic_cast<SourceContextTelegram*>(prevSourceContext.get());
+            auto newContext      = dynamic_cast<SourceContextTelegram*>(sourceContext.release());
+            
+            if (!telegramContext || !newContext) return false;
+            
+            *telegramContext = std::move(*newContext);
+            
+            break;
+        }
+        case AppContext::SourceType::ST_VK: {
+            auto vkContext  = dynamic_cast<SourceContextVK*>(prevSourceContext.get());
+            auto newContext = dynamic_cast<SourceContextVK*>(sourceContext.release());
+            
+            if (!vkContext || !newContext) return false;
+            
+            *vkContext = std::move(*newContext);
+            
+            break;
+        }
+        default: return false;
         }
     }
-    
+
     return true;
 }
 

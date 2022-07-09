@@ -2,6 +2,7 @@
 
 SourceBase::SourceBase()
     : m_url{},
+      m_sourceContext{nullptr},
       m_id{0}
 {
     
@@ -29,7 +30,7 @@ std::shared_ptr<SourceContextInterface> SourceBase::getContext() const
 
 bool SourceBase::setContext(const std::shared_ptr<SourceContextInterface> &context)
 {
-    if (!m_sourceContext.get() || !context.get()) return false;
+    if (m_sourceContext.get() || !context.get()) return false;
     
     m_sourceContext = context;
     

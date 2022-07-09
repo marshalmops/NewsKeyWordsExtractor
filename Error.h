@@ -2,10 +2,12 @@
 #define ERROR_H
 
 #include <QString>
+#include <QMetaType>
 
 class Error
 {
 public:
+    Error() = default;
     Error(const QString &text,
           bool isCritical = false);
     
@@ -16,5 +18,7 @@ private:
     QString m_text;
     bool    m_isCritical;
 };
+
+Q_DECLARE_METATYPE(Error)
 
 #endif // ERROR_H

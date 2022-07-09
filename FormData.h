@@ -19,4 +19,6 @@ private:
     QVector<FormDataElement> m_data;
 };
 
+Q_DECLARE_METATYPE(FormData)
+
 #endif // FORMDATA_H

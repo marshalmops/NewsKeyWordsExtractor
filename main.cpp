@@ -15,6 +15,11 @@ int main(int argc, char *argv[])
     std::unique_ptr<NetworkCore> networkCore{};
     std::shared_ptr<FileManager> fileManager{};
     
+    qRegisterMetaType<Error>();
+    qRegisterMetaType<RawNewsDataBase>();
+    qRegisterMetaType<FormTemplate>();
+    qRegisterMetaType<FormData>();
+    
     if (!AppInitializer::initializeApp(app, appView, mainCore, networkCore, fileManager)) 
         return -1;
     

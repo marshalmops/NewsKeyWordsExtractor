@@ -42,6 +42,9 @@ private:
     std::shared_ptr<ThreadedQueue<RawNewsDataBase>> m_rawNewsQueue;
     
     std::unique_ptr<TextKeyWordsExtractor> m_textKeyWordsExtractor;
+    
+    std::unique_ptr<QThread> m_execThread;
+    bool m_isRunning;
 };
 
 #endif // MAINCOREWORKER_H

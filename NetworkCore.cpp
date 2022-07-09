@@ -1,9 +1,11 @@
 #include "NetworkCore.h"
 
 NetworkCore::NetworkCore()
-    : m_requestExecutor{std::make_shared<NetworkRequestExecutor>()},
+    : m_requestExecutor{std::make_shared<NetworkRequestExecutor>(this)},
       m_sourcePreparer{std::make_shared<NetworkSourceContextPreparer>(m_requestExecutor)},
-      m_requestCreator{std::make_unique<NetworkRequestCreator>(m_sourcePreparer)}
+      m_requestCreator{std::make_unique<NetworkRequestCreator>(m_sourcePreparer)},
+      m_execThread{nullptr},
+      m_isRunning{false}
 {
     QObject::connect(m_sourcePreparer.get(), &NetworkSourceContextPreparer::additionalInputDataRequested, this, &NetworkCore::additionalInputDataRequested);
 }
@@ -17,9 +19,11 @@ void NetworkCore::start()
 {
     auto *dispatcher = QThread::currentThread()->eventDispatcher();
     
-    while (true) {
-        if (!dispatcher->processEvents(QEventLoop::ProcessEventsFlag::AllEvents))
-            emit errorOccured(Error{"Event processing error!", true});
+    m_execThread.reset(QThread::currentThread());
+    m_isRunning = true;
+    
+    while (m_isRunning) {
+        dispatcher->processEvents(QEventLoop::ProcessEventsFlag::AllEvents);
     }
 }
 
@@ -28,7 +32,8 @@ void NetworkCore::stop()
     //this->~NetworkCore();
     
     QThread::currentThread()->quit();
-    QThread::currentThread()->deleteLater();
+    
+    m_isRunning = false;
     
     emit stopped();
 }
@@ -39,7 +44,7 @@ void NetworkCore::prepareContext()
     
     for (auto i = contexts->begin(); i != contexts->end(); ++i) {
         if (!m_sourcePreparer->prepareSourceContext((*i).get())) {
-            emit errorOccured(Error{"Source context preparing error!", true});
+            emit errorOccured(Error{tr("Source context preparing error!"), true});
             
             return;
         }
@@ -56,7 +61,7 @@ void NetworkCore::receiveData()
     
     for (auto i = sources->begin(); i != sources->end(); ++i) {
         if (!m_sourcePreparer->prepareSource((*i).get())) {
-            emit errorOccured(Error{"Source preparing error!", true});
+            emit errorOccured(Error{tr("Source preparing error!"), true});
             
             return;
         }
@@ -64,7 +69,7 @@ void NetworkCore::receiveData()
         QNetworkRequest newRequest{};
         
         if (!m_requestCreator->createRequestForSource((*i).get(), newRequest)) {
-            emit errorOccured(Error{"Requests creating error!", true});
+            emit errorOccured(Error{tr("Requests creating error!"), true});
             
             return;
         }
@@ -72,7 +77,7 @@ void NetworkCore::receiveData()
         QByteArray newDataBytes{};
         
         if (!m_requestExecutor->executeGetRequest(newRequest, newDataBytes)) {
-            emit errorOccured(Error{"Requests processing error!", true});
+            emit errorOccured(Error{tr("Requests processing error!"), true});
             
             return;
         }
@@ -88,7 +93,7 @@ void NetworkCore::receiveData()
 void NetworkCore::processGottenAdditionalInputData(const FormData gottenParams)
 {
     if (!m_sourcePreparer->processGottenAdditionalInputData(gottenParams)) {
-        emit errorOccured(Error{"Additional data processing error!", true});
+        emit errorOccured(Error{tr("Additional data processing error!"), true});
         
         return;
     }

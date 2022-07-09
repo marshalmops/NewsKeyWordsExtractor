@@ -72,6 +72,9 @@ public slots:
     void startContextPreparing();
     void endContextPreparing  ();
     
+    void startDataGetting();
+    void endDataGetting();
+    
 private:
     bool getFormDataWithTemplate(const FormTemplate &formTemplate,
                                  FormData &formData);
@@ -94,6 +97,8 @@ private:
     QPushButton *m_gettingButton;
     
     bool m_isPrepared;
+    
+    bool m_isTelegramAllowed;
 };
 
 #endif // APPVIEW_H

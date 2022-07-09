@@ -23,8 +23,12 @@ void MainCore::launchWorkers(const uint16_t count)
         m_coreWorkers.push_back(newWorker);
         
         connect(newThread, &QThread::started, newWorker.get(), &MainCoreWorker::start);
+        
         connect(this, &MainCore::stop, newWorker.get(), &MainCoreWorker::stop, Qt::QueuedConnection);
-        connect(newWorker.get(), &MainCoreWorker::stopped, this, &MainCore::processStop, Qt::QueuedConnection);
+        
+        connect(newWorker.get(), &MainCoreWorker::stopped,           this, &MainCore::processStop,                           Qt::QueuedConnection);
+        connect(newWorker.get(), &MainCoreWorker::errorOccured,      this, &MainCore::processError,                          Qt::QueuedConnection);
+        connect(newWorker.get(), &MainCoreWorker::newsDataProcessed, this, &MainCore::checkReceivedDataProcessingCompleteon, Qt::QueuedConnection);
         
         newThread->start();
     }
@@ -48,7 +52,7 @@ void MainCore::checkReceivedDataProcessingCompleteon()
     if (!m_rawNewsQueue->isEmpty()) return;
     
     if (!m_fileManager->saveJson(m_dictionary->toJson())) {
-        processError(Error{"Dictionary saving error!", true});
+        processError(Error{tr("Dictionary saving error!"), true});
         
         return;
     }
@@ -57,7 +61,7 @@ void MainCore::checkReceivedDataProcessingCompleteon()
 void MainCore::addRSSSource(const QString rssSource)
 {
     if (!SourceDictionary::createNewSource(std::make_unique<SourceStandardRSS>(rssSource))) {
-        processError(Error{"New RSS source creation error!", true});
+        processError(Error{tr("New RSS source creation error!"), true});
         
         return;
     }
@@ -68,7 +72,7 @@ void MainCore::addRSSSource(const QString rssSource)
 void MainCore::addTelegramSource(const QString telegramSource)
 {
     if (!SourceDictionary::createNewSource(std::make_unique<SourceTelegram>(telegramSource))) {
-        processError(Error{"New Telegram source creation error!", true});
+        processError(Error{tr("New Telegram source creation error!"), true});
         
         return;
     }
@@ -79,7 +83,7 @@ void MainCore::addTelegramSource(const QString telegramSource)
 void MainCore::deleteRSSSource(const AppContext::Id id)
 {
     if (!SourceDictionary::deleteSourceById(id)) {
-        processError(Error{"Chosen source deleting error!", true});
+        processError(Error{tr("Chosen source deleting error!"), true});
         
         return;
     }
@@ -90,7 +94,7 @@ void MainCore::deleteRSSSource(const AppContext::Id id)
 void MainCore::deleteTelegramSource(const AppContext::Id id)
 {
     if (!SourceDictionary::deleteSourceById(id)) {
-        processError(Error{"Chosen source deleting error!", true});
+        processError(Error{tr("Chosen source deleting error!"), true});
         
         return;
     }
@@ -101,7 +105,13 @@ void MainCore::deleteTelegramSource(const AppContext::Id id)
 void MainCore::setVKData(const AppContext::Token token)
 {
     if (!SourceDictionary::createSourceContext(std::make_unique<SourceContextVK>(token))) {
-        processError(Error{"VK context creation error!", true});
+        processError(Error{tr("VK context creation error!"), true});
+        
+        return;
+    }
+    
+    if (!SourceDictionary::createNewSource(std::make_unique<SourceVK>())) {
+        processError(Error{tr("VK source creation error!"), true});
         
         return;
     }
@@ -112,7 +122,7 @@ void MainCore::setTelegramData(const AppContext::Phone phone,
                                const AppContext::Token apiHash)
 {
     if (!SourceDictionary::createSourceContext(std::make_unique<SourceContextTelegram>(apiId, apiHash, phone))) {
-        processError(Error{"Telegram context creation error!", true});
+        processError(Error{tr("Telegram context creation error!"), true});
         
         return;
     }
@@ -130,6 +140,12 @@ void MainCore::endGettingContextPreparing()
 
 void MainCore::getData()
 {
+    if (SourceDictionary::getSources()->empty()) {
+        processError(Error{tr("No sources have been provided!")});
+        
+        return;
+    }
+    
     emit dataRequested();
 }
 

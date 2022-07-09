@@ -93,6 +93,8 @@ AppView::AppView(QWidget *parent)
     connect(m_addTelegramSourceButton,    &QPushButton::clicked, this, &AppView::addTelegramSource);
     connect(m_removeRSSSourceButton,      &QPushButton::clicked, this, &AppView::deleteRSSSource);
     connect(m_removeTelegramSourceButton, &QPushButton::clicked, this, &AppView::deleteTelegramSource);
+    connect(m_preparingButton,            &QPushButton::clicked, this, &AppView::prepareContext);
+    connect(m_gettingButton,              &QPushButton::clicked, this, &AppView::startDataGetting);    
     
     m_gettingButton->setEnabled(false);
     
@@ -101,7 +103,8 @@ AppView::AppView(QWidget *parent)
     
     // FIXME: telegram blocking:
     
-    m_setTelegramContextButton->setEnabled(false);
+    m_isTelegramAllowed = false;
+    m_setTelegramContextButton->setEnabled(m_isTelegramAllowed);
 }
 
 void AppView::addRSSSource()
@@ -288,6 +291,18 @@ void AppView::endContextPreparing()
     m_gettingButton->setEnabled(true);
 }
 
+void AppView::startDataGetting()
+{
+    changeLoadingState(true);
+    
+    emit getData();
+}
+
+void AppView::endDataGetting()
+{
+    changeLoadingState(false);
+}
+
 bool AppView::getFormDataWithTemplate(const FormTemplate &formTemplate,
                                       FormData &formData)
 {
@@ -313,12 +328,12 @@ void AppView::changeLoadingState(bool isLoading)
 {
     // elements enabling changing...
     
-    m_setTelegramContextButton->setEnabled(!isLoading);
+    m_setTelegramContextButton->setEnabled(!isLoading && m_isTelegramAllowed);
     m_setVKContextButton->setEnabled(!isLoading);
     m_addRSSSourceButton->setEnabled(!isLoading);
     m_removeRSSSourceButton->setEnabled(!isLoading);
-    m_addTelegramSourceButton->setEnabled(!isLoading && m_isPrepared);
-    m_removeTelegramSourceButton->setEnabled(!isLoading && m_isPrepared);
+    m_addTelegramSourceButton->setEnabled(!isLoading && m_isTelegramAllowed);
+    m_removeTelegramSourceButton->setEnabled(!isLoading && m_isTelegramAllowed);
     m_preparingButton->setEnabled(!isLoading);
-    m_gettingButton->setEnabled(!isLoading);
+    m_gettingButton->setEnabled(!isLoading && m_isPrepared);
 }

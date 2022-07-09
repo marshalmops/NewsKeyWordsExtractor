@@ -50,6 +50,9 @@ private:
     std::shared_ptr<NetworkRequestExecutor>       m_requestExecutor;
     std::shared_ptr<NetworkSourceContextPreparer> m_sourcePreparer;
     std::unique_ptr<NetworkRequestCreator>        m_requestCreator;
+    
+    std::unique_ptr<QThread> m_execThread;
+    bool m_isRunning;
 };
 
 #endif // NETWORKCORE_H

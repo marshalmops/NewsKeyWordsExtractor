@@ -1,7 +1,7 @@
 #include "NetworkRequestExecutor.h"
 
-NetworkRequestExecutor::NetworkRequestExecutor()
-    : m_networkManager{}
+NetworkRequestExecutor::NetworkRequestExecutor(QObject *networkManagerParent)
+    : m_networkManager{networkManagerParent}
 {
     
 }
@@ -13,7 +13,7 @@ bool NetworkRequestExecutor::executeGetRequest(const QNetworkRequest &request,
     
     waitForResponse(replyBuffer);
     
-    if (!replyBuffer->errorString().isEmpty() || replyBuffer->bytesAvailable() <= 0)
+    if (replyBuffer->bytesAvailable() <= 0)
         return false;
     
     reply = replyBuffer->readAll();
