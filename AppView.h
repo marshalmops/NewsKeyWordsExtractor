@@ -35,7 +35,8 @@ signals:
     
     void errorOccured(const Error err);
     
-    void rssSourceAdded     (const QString rssSource);
+    void rssSourceAdded     (const QString rssSource,
+                             const QString articleTextClassName);
     void telegramSourceAdded(const QString telegramSource);
     
     void rssSourceDeleted     (const AppContext::Id id);

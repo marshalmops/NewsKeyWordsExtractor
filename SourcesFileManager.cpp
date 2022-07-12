@@ -52,6 +52,7 @@ bool SourcesFileManager::loadSources(const QString &filename)
                 if (!SourceDictionary::createNewSourceFromBytes(sourceType, readBuffer)) return false;
                 
                 readBuffer.clear();
+                ++curIndex;
                 
                 break;
             }
@@ -116,6 +117,7 @@ bool SourcesFileManager::loadSourcesContexts(const QString &filename)
                 if (!SourceDictionary::createSourceContextFromBytes(sourceType, readBuffer)) return false;
                 
                 readBuffer.clear();
+                ++curIndex;
                 
                 break;
             }

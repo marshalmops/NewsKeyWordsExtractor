@@ -6,6 +6,8 @@
 
 namespace AppContext
 {
+constexpr static const uint64_t C_TICK_DELAY_MS = 200;
+
 using Token = QString;
 using Id    = uint64_t;
 using Phone = QString;

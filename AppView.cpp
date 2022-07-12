@@ -113,12 +113,14 @@ void AppView::addRSSSource()
     FormTemplate formTemplate{};
     
     formTemplate.addParam("URL", QMetaType::Type::QUrl);
+    formTemplate.addParam("Article text class name", QMetaType::Type::QString);
     
     if (!getFormDataWithTemplate(formTemplate, formData)) return;
     
-    auto url = formData.getData().at(0).second.toUrl();
+    auto url                  = formData.getData().at(0).second.toUrl();
+    auto articleTextClassName = formData.getData().at(1).second.toString();
     
-    if (!url.isValid()) {
+    if (!url.isValid() || articleTextClassName.isEmpty()) {
         QMessageBox::warning(this, tr("Error"), tr("Provided data is incorrect!"));
         
         return;
@@ -126,7 +128,7 @@ void AppView::addRSSSource()
     
     changeLoadingState(true);
     
-    emit rssSourceAdded(url.toString());
+    emit rssSourceAdded(url.toString(), articleTextClassName);
 }
 
 void AppView::addTelegramSource()
@@ -300,6 +302,8 @@ void AppView::startDataGetting()
 
 void AppView::endDataGetting()
 {
+    QMessageBox::information(this, tr("Success"), tr("Provided data has been processed!"));
+    
     changeLoadingState(false);
 }
 

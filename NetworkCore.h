@@ -12,6 +12,7 @@
 #include "NetworkRequestCreator.h"
 #include "NetworkSourceContextPreparer.h"
 #include "NetworkRequestExecutor.h"
+#include "NetworkResponsePreparer.h"
 
 #include "RawNewsDataBase.h"
 
@@ -50,6 +51,7 @@ private:
     std::shared_ptr<NetworkRequestExecutor>       m_requestExecutor;
     std::shared_ptr<NetworkSourceContextPreparer> m_sourcePreparer;
     std::unique_ptr<NetworkRequestCreator>        m_requestCreator;
+    std::unique_ptr<NetworkResponsePreparer>      m_responsePreparer;
     
     std::unique_ptr<QThread> m_execThread;
     bool m_isRunning;

@@ -11,7 +11,7 @@ public:
     ParserDictionary() = delete;
     
     static bool parseData(const RawNewsDataBase &data,
-                          std::vector<News> &news);
+                          News &news);
     
 private:
     static std::unique_ptr<NewsParserBase> getParserBySourceType(const AppContext::SourceType sourceType);

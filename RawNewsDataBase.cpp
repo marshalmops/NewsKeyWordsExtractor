@@ -1,23 +1,23 @@
 #include "RawNewsDataBase.h"
 
 RawNewsDataBase::RawNewsDataBase()
-    : m_sourceType{AppContext::SourceType::ST_INVALID},
+    : m_sourcePtr{nullptr},
       m_data{}
 {
     
 }
 
-RawNewsDataBase::RawNewsDataBase(const AppContext::SourceType type,
+RawNewsDataBase::RawNewsDataBase(const std::shared_ptr<SourceBase> &source, 
                                  const QByteArray &data)
-    : m_sourceType{type},
+    : m_sourcePtr{source},
       m_data{data}
 {
     
 }
 
-AppContext::SourceType RawNewsDataBase::getSourceType() const
+std::shared_ptr<SourceBase> RawNewsDataBase::getSource() const
 {
-    return m_sourceType;
+    return m_sourcePtr;
 }
 
 const QByteArray &RawNewsDataBase::getData() const

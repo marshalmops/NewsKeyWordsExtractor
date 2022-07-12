@@ -9,7 +9,7 @@ public:
     NewsParserTelegram();
     
     virtual bool parseData(const RawNewsDataBase &data,
-                           std::vector<News> &news) override;
+                           News &news) override;
 };
 
 #endif // NEWSPARSERTELEGRAM_H

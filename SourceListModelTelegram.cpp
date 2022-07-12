@@ -15,6 +15,8 @@ QVariant SourceListModelTelegram::data(const QModelIndex &index,
     const auto &sources = SourceDictionary::getSources();
     const auto *curElem = dynamic_cast<SourceTelegram*>((sources->at(index.row())).get());
     
+    if (!curElem) return QVariant{};
+    
     switch (role) {
     case Qt::DisplayRole: {
         return curElem->getChannelName();

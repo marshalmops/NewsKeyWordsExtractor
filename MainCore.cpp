@@ -8,13 +8,17 @@ MainCore::MainCore(std::shared_ptr<FileManager> fileManager,
       m_dictionary{std::make_shared<ThreadedStringDictionary<AppContext::WordsFrequency>>()},
       m_rawNewsQueue{std::make_shared<ThreadedQueue<RawNewsDataBase>>()},
       m_usedThreadsCount{usedThreadsCount},
-      m_stopCounter{0}
+      m_stopCounter{0},
+      m_totalNewsCountOnProcessing{0},
+      m_newsProcessedCounter{0}
 {
     
 }
 
 void MainCore::launchWorkers(const uint16_t count)
 {
+                   
+                   
     for (auto i = 0; i < count; ++i) {
         auto newWorker  = std::make_shared<MainCoreWorker>(m_dictionary, m_rawNewsQueue);
         auto *newThread = new QThread{};
@@ -43,24 +47,31 @@ void MainCore::processError(const Error err)
 
 void MainCore::processReceivedData(std::vector<RawNewsDataBase> data)
 {
+    m_totalNewsCountOnProcessing = data.size();
+    
     for (auto i = data.begin(); i != data.end(); ++i)
         m_rawNewsQueue->pushItem(std::move(*i));
 }
 
 void MainCore::checkReceivedDataProcessingCompleteon()
 {
-    if (!m_rawNewsQueue->isEmpty()) return;
+    ++m_newsProcessedCounter;
+    
+    if (m_newsProcessedCounter != m_totalNewsCountOnProcessing) return;
     
     if (!m_fileManager->saveJson(m_dictionary->toJson())) {
         processError(Error{tr("Dictionary saving error!"), true});
         
         return;
     }
+    
+    emit dataReceived();
 }
 
-void MainCore::addRSSSource(const QString rssSource)
+void MainCore::addRSSSource(const QString rssUrl, 
+                            const QString articleTextClass)
 {
-    if (!SourceDictionary::createNewSource(std::make_unique<SourceStandardRSS>(rssSource))) {
+    if (!SourceDictionary::createNewSource(std::make_unique<SourceStandardRSS>(rssUrl, articleTextClass))) {
         processError(Error{tr("New RSS source creation error!"), true});
         
         return;
@@ -142,6 +153,8 @@ void MainCore::getData()
 {
     if (SourceDictionary::getSources()->empty()) {
         processError(Error{tr("No sources have been provided!")});
+        
+        emit dataNotReceived();
         
         return;
     }

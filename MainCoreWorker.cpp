@@ -27,11 +27,14 @@ void MainCoreWorker::start()
     while (m_isRunning) {
         dispatcher->processEvents(QEventLoop::ProcessEventsFlag::AllEvents);
         
+#ifndef QT_DEBUG
+        QThread::currentThread()->wait(AppContext::C_TICK_DELAY_MS);
+#endif
         RawNewsDataBase newRawNews{};
         
         if (!m_rawNewsQueue->takeItem(newRawNews)) continue;
         
-        std::vector<News> parsedNews{};
+        News parsedNews{};
         
         if (!ParserDictionary::parseData(newRawNews, parsedNews)) {
             emit errorOccured(Error{"Raw news parsing error!", true});

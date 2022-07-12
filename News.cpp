@@ -9,8 +9,8 @@ News::News()
     
 }
 
-News::News(const QString &title, 
-           const QString &text, 
+News::News(const QString &text, 
+           const QString &title, 
            const QDate &date)
     : m_title{title},
       m_text{text},

@@ -1,9 +1,9 @@
 #include "ParserDictionary.h"
 
 bool ParserDictionary::parseData(const RawNewsDataBase &data,
-                                 std::vector<News> &news)
+                                 News &news)
 {
-    auto parser = getParserBySourceType(data.getSourceType());
+    auto parser = getParserBySourceType(data.getSource()->getType());
     
     return parser->parseData(data, news);
 }

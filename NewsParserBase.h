@@ -13,7 +13,7 @@ public:
     virtual ~NewsParserBase() = default;
     
     virtual bool parseData(const RawNewsDataBase &data,
-                           std::vector<News> &news) = 0;
+                           News &news) = 0;
     
     AppContext::SourceType getSourceType() const;
     

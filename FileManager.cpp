@@ -6,6 +6,22 @@ FileManager::FileManager(const std::shared_ptr<SourcesFileManager> &sourcesFileM
     
 }
 
+bool FileManager::loadJson(const QString &filename, 
+                           QJsonDocument &jsonData)
+{
+    QFile file{filename};
+    
+    if (!file.open(QFile::OpenModeFlag::ReadOnly)) return false;
+    
+    QByteArray jsonBytes{file.readAll()};
+    
+    if (jsonBytes.isEmpty()) return false;
+    
+    jsonData = QJsonDocument::fromJson(jsonBytes);
+    
+    return !jsonData.isEmpty();
+}
+
 bool FileManager::saveJson(const QJsonDocument &jsonData, 
                            const QString &filename)
 {

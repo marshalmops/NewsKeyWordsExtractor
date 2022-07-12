@@ -32,8 +32,9 @@ public:
     static const std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>>& getSources();
     static const std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>>& getSourcesContexts();
     
-private:
     static std::shared_ptr<SourceContextInterface> getSourceContext(const AppContext::SourceType sourceType);
+    
+private:
     static std::vector<std::shared_ptr<SourceBase>>::iterator getSourceIteratorById(const AppContext::Id id);
     static std::vector<std::shared_ptr<SourceBase>>::iterator getSourceIteratorByType(const AppContext::SourceType sourceType);
     

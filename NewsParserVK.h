@@ -22,7 +22,7 @@ public:
     NewsParserVK();
     
     virtual bool parseData(const RawNewsDataBase &data,
-                           std::vector<News> &news) override;
+                           News &news) override;
 };
 
 #endif // NEWSPARSERVK_H

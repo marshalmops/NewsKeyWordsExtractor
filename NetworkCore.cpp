@@ -4,6 +4,7 @@ NetworkCore::NetworkCore()
     : m_requestExecutor{std::make_shared<NetworkRequestExecutor>(this)},
       m_sourcePreparer{std::make_shared<NetworkSourceContextPreparer>(m_requestExecutor)},
       m_requestCreator{std::make_unique<NetworkRequestCreator>(m_sourcePreparer)},
+      m_responsePreparer{std::make_unique<NetworkResponsePreparer>(m_requestExecutor)},
       m_execThread{nullptr},
       m_isRunning{false}
 {
@@ -82,9 +83,17 @@ void NetworkCore::receiveData()
             return;
         }
         
-        RawNewsDataBase newData{(*i)->getType(), newDataBytes};
-    
-        data.push_back(newData);
+        std::vector<QByteArray> preparedData{};
+        
+        if (!m_responsePreparer->prepareResponse((*i)->getType(), newDataBytes, preparedData)) {
+            emit errorOccured(Error{tr("Response processing error!"), true});
+            
+            return;
+        }
+        
+        for (auto j = preparedData.begin(); j != preparedData.end(); ++j) {
+            data.push_back(RawNewsDataBase{(*i), std::move(*j)});
+        }
     }
     
     emit dataReceived(data);

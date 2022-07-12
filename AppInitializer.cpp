@@ -10,10 +10,14 @@ bool AppInitializer::initializeApp(QApplication &app,
     
     if (!fileManager->getSourcesFileManager()->loadSourcesContexts()) {
         // no saved contexts or error occurance...
-    } else {
-        if (!fileManager->getSourcesFileManager()->loadSources()) {
-            // no saved sources or error occurance...
-        }
+    }
+    
+    if (!fileManager->getSourcesFileManager()->loadSources()) {
+        // no saved sources or error occurance...
+    }
+    
+    if (!TextKeyWordsExtractorContext::initializeContext(fileManager)) {
+        // ??
     }
     
     auto usedOtherThreadsCount = QThread::idealThreadCount() - 1;
@@ -60,6 +64,7 @@ bool AppInitializer::initializeApp(QApplication &app,
     QObject::connect(mainCore.get(), &MainCore::additionalInputDataRequested, &appView, &AppView::getFormDataByTemplate);
     QObject::connect(mainCore.get(), &MainCore::networkContextPrepared,       &appView, &AppView::endContextPreparing);
     QObject::connect(mainCore.get(), &MainCore::dataReceived,                 &appView, &AppView::endDataGetting);    
+    QObject::connect(mainCore.get(), &MainCore::dataNotReceived,              &appView, &AppView::endDataGetting);   
     
     //
     

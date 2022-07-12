@@ -13,6 +13,8 @@ public:
     
     FileManager(const std::shared_ptr<SourcesFileManager> &sourcesFileManager);
     
+    bool loadJson(const QString &filename,
+                  QJsonDocument &jsonData);
     bool saveJson(const QJsonDocument &jsonData,
                   const QString &filename = C_DEFAULT_JSON_OUTPUT_FILENAME);
     

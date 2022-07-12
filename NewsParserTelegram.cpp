@@ -7,7 +7,7 @@ NewsParserTelegram::NewsParserTelegram()
 }
 
 bool NewsParserTelegram::parseData(const RawNewsDataBase &data, 
-                                   std::vector<News> &news)
+                                   News &news)
 {
     // parsing Telegram JSON data...
 }

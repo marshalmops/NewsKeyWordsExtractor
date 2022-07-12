@@ -5,19 +5,21 @@
 
 #include "AppContext.h"
 
+#include "SourceBase.h"
+
 class RawNewsDataBase
 {
 public:
     RawNewsDataBase();
-    RawNewsDataBase(const AppContext::SourceType type,
+    RawNewsDataBase(const std::shared_ptr<SourceBase> &source,
                     const QByteArray &data);
     
-    AppContext::SourceType getSourceType() const;
-    const QByteArray&      getData      () const;
+    std::shared_ptr<SourceBase> getSource() const;
+    const QByteArray&           getData  () const;
     
 private:
-    AppContext::SourceType m_sourceType;
-    QByteArray             m_data;
+    std::shared_ptr<SourceBase> m_sourcePtr;
+    QByteArray                  m_data;
 };
 
 Q_DECLARE_METATYPE(RawNewsDataBase)

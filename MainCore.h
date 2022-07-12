@@ -36,6 +36,7 @@ signals:
     // to AppView:
     
     void dataReceived();
+    void dataNotReceived();
     
     void rssSourceAdded     ();
     void telegramSourceAdded();
@@ -62,7 +63,8 @@ public slots:
     void processReceivedData(std::vector<RawNewsDataBase> data);
     void checkReceivedDataProcessingCompleteon();
     
-    void addRSSSource     (const QString rssSource);
+    void addRSSSource     (const QString rssUrl,
+                           const QString articleTextClass);
     void addTelegramSource(const QString telegramSource);
     
     void deleteRSSSource     (const AppContext::Id id);
@@ -90,6 +92,9 @@ private:
     
     uint16_t m_usedThreadsCount;
     uint16_t m_stopCounter;
+    
+    uint64_t m_totalNewsCountOnProcessing;
+    uint64_t m_newsProcessedCounter;
 };
 
 #endif // MAINCORE_H
