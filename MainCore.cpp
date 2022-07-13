@@ -10,7 +10,8 @@ MainCore::MainCore(std::shared_ptr<FileManager> fileManager,
       m_usedThreadsCount{usedThreadsCount},
       m_stopCounter{0},
       m_totalNewsCountOnProcessing{0},
-      m_newsProcessedCounter{0}
+      m_newsProcessedCounter{0},
+      m_isCriticalErrorReceived{false}
 {
     
 }
