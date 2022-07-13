@@ -8,8 +8,8 @@ class NewsParserTelegram : public NewsParserBase
 public:
     NewsParserTelegram();
     
-    virtual bool parseData(const RawNewsDataBase &data,
-                           News &news) override;
+    virtual ParsingResult parseData(const RawNewsDataBase &data,
+                                    News &news) override;
 };
 
 #endif // NEWSPARSERTELEGRAM_H

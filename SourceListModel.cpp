@@ -20,13 +20,6 @@ SourceListModel::SourceListModel(QObject *parent)
     
 }
 
-int SourceListModel::rowCount(const QModelIndex &parent) const
-{
-    if (parent.isValid()) return -1;
-    
-    return SourceDictionary::getSources()->size();
-}
-
 bool SourceListModel::insertRows(int row, 
                                  int count, 
                                  const QModelIndex &parent)

@@ -26,6 +26,7 @@ SOURCES += \
     NetworkResponsePreparer.cpp \
     NetworkResponsePreparerBase.cpp \
     NetworkResponsePreparerRSS.cpp \
+    NetworkResponsePreparerVK.cpp \
     NetworkSourceContextPreparer.cpp \
     News.cpp \
     NewsParserBase.cpp \
@@ -75,6 +76,7 @@ HEADERS += \
     NetworkResponsePreparer.h \
     NetworkResponsePreparerBase.h \
     NetworkResponsePreparerRSS.h \
+    NetworkResponsePreparerVK.h \
     NetworkSourceContextPreparer.h \
     News.h \
     NewsParserBase.h \

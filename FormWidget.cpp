@@ -90,7 +90,7 @@ QLineEdit *FormWidget::generateInputWidgetByMetaType(const QMetaType::Type type)
         
         break;
     }
-    default: {newValidator = new QRegularExpressionValidator{QRegularExpression{"[A-Za-z]+[\\w-]*"}};
+    default: {newValidator = new QRegularExpressionValidator{QRegularExpression{"[A-Za-zА-Яа-я]+.*"}};
     }
     }
     

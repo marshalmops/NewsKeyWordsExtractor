@@ -13,6 +13,7 @@ public:
     
     virtual QVariant data(const QModelIndex &index, 
                           int role) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 };
 
 #endif // SOURCELISTMODELTELEGRAM_H

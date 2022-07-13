@@ -32,6 +32,8 @@ public:
     static const std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>>& getSources();
     static const std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>>& getSourcesContexts();
     
+    static std::unique_ptr<std::vector<std::shared_ptr<SourceBase>>> getSourcesOfType(const AppContext::SourceType type);
+    
     static std::shared_ptr<SourceContextInterface> getSourceContext(const AppContext::SourceType sourceType);
     
 private:

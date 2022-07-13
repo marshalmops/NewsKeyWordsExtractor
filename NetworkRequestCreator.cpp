@@ -46,7 +46,7 @@ bool NetworkRequestCreator::createRequestForVKSource(SourceBase *source,
     QUrlQuery getQuery{};
     
     getQuery.addQueryItem(SourceContextVK::C_TOKEN_PROPERTY,   vkContext->getToken());
-    getQuery.addQueryItem(SourceContextVK::C_VERSION_PROPERTY, QString::number(SourceContextVK::C_VK_API_VERSION));
+    getQuery.addQueryItem(SourceContextVK::C_VERSION_PROPERTY, SourceContextVK::C_VK_API_VERSION);
     
     requestUrl.setQuery(getQuery);
     request.setUrl(requestUrl);

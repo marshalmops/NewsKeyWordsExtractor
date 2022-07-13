@@ -63,8 +63,7 @@ bool AppInitializer::initializeApp(QApplication &app,
     QObject::connect(mainCore.get(), &MainCore::telegramSourceDeleted,        &appView, &AppView::deleteTelegramSourceRow);
     QObject::connect(mainCore.get(), &MainCore::additionalInputDataRequested, &appView, &AppView::getFormDataByTemplate);
     QObject::connect(mainCore.get(), &MainCore::networkContextPrepared,       &appView, &AppView::endContextPreparing);
-    QObject::connect(mainCore.get(), &MainCore::dataReceived,                 &appView, &AppView::endDataGetting);    
-    QObject::connect(mainCore.get(), &MainCore::dataNotReceived,              &appView, &AppView::endDataGetting);   
+    QObject::connect(mainCore.get(), &MainCore::dataReceived,                 &appView, &AppView::endDataGetting);
     
     //
     

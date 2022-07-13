@@ -9,9 +9,9 @@ class SourceContextVK : public SourceContextInterface
 {
 public:
     constexpr static const char* C_VK_API_URL       = "https://api.vk.com/method/newsfeed.get";
-    constexpr static const char* C_TOKEN_PROPERTY   = "token";
-    constexpr static const char* C_VERSION_PROPERTY = "V";
-    constexpr static const float C_VK_API_VERSION   = 5.131;
+    constexpr static const char* C_TOKEN_PROPERTY   = "access_token";
+    constexpr static const char* C_VERSION_PROPERTY = "v";
+    constexpr static const char* C_VK_API_VERSION   = "5.131";
     
     SourceContextVK(const AppContext::Token &token = AppContext::Token{});
     

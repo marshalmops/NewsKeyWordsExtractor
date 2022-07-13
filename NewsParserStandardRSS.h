@@ -14,17 +14,11 @@ class NewsParserStandardRSS : public NewsParserBase
 {
     constexpr static const char* C_ITEM_TAG_NAME = "item";
     
-    enum OperationResult : uint8_t {
-        OR_SUCCESS = 0,
-        OR_ERROR,
-        OR_NOT_FOUND
-    };
-    
 public:
     NewsParserStandardRSS();
     
-    virtual bool parseData(const RawNewsDataBase &data,
-                           News &news) override;
+    virtual ParsingResult parseData(const RawNewsDataBase &data,
+                                    News &news) override;
 };
 
 #endif // NEWSPARSERSTANDARDRSS_H

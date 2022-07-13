@@ -15,6 +15,8 @@ bool NetworkResponsePreparer::prepareResponse(AppContext::SourceType type,
     
     switch (type) {
     case AppContext::SourceType::ST_STANDARD_RSS: return std::make_unique<NetworkResponsePreparerRSS>(m_executor)->prepareResponse(responseBytes, preparedData);
+    case AppContext::SourceType::ST_VK:           return std::make_unique<NetworkResponsePreparerVK>(m_executor)->prepareResponse(responseBytes, preparedData);
+    default: preparedData.push_back(responseBytes);
     }
     
     return true;

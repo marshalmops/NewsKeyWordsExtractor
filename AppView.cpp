@@ -300,9 +300,10 @@ void AppView::startDataGetting()
     emit getData();
 }
 
-void AppView::endDataGetting()
+void AppView::endDataGetting(bool successFlag)
 {
-    QMessageBox::information(this, tr("Success"), tr("Provided data has been processed!"));
+    if (successFlag)
+        QMessageBox::information(this, tr("Success"), tr("Provided data has been processed!"));
     
     changeLoadingState(false);
 }

@@ -48,8 +48,9 @@ bool SourcesFileManager::loadSources(const QString &filename)
             QChar readCharBuffer{sourcesBytes.at(curIndex)};
             
             if (readCharBuffer == C_SOURCES_SEPARATOR) {
-                if (readBuffer.isEmpty())                                                return false;
-                if (!SourceDictionary::createNewSourceFromBytes(sourceType, readBuffer)) return false;
+                if (readBuffer.isEmpty()) return false;
+               
+                SourceDictionary::createNewSourceFromBytes(sourceType, readBuffer);
                 
                 readBuffer.clear();
                 ++curIndex;

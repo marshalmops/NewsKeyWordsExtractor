@@ -74,7 +74,7 @@ public slots:
     void endContextPreparing  ();
     
     void startDataGetting();
-    void endDataGetting();
+    void endDataGetting(bool successFlag = true);
     
 private:
     bool getFormDataWithTemplate(const FormTemplate &formTemplate,

@@ -17,8 +17,6 @@ public:
     
     explicit SourceListModel(QObject *parent = nullptr);
     
-    virtual int rowCount(const QModelIndex &parent = QModelIndex{}) const override;
-    
     virtual bool insertRows(int row, 
                             int count = 1, 
                             const QModelIndex &parent = QModelIndex{}) override;

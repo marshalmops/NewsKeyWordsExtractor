@@ -6,13 +6,20 @@ SourceListModelTelegram::SourceListModelTelegram(QObject *parent)
     
 }
 
+int SourceListModelTelegram::rowCount(const QModelIndex &parent) const
+{
+    if (parent.isValid()) return -1;
+    
+    return SourceDictionary::getSourcesOfType(AppContext::SourceType::ST_TELEGRAM)->size();
+}
+
 QVariant SourceListModelTelegram::data(const QModelIndex &index, 
                                        int role) const
 {
     if (!isDataInputsCorrect(index, role, rowCount()))
         return QVariant{};
     
-    const auto &sources = SourceDictionary::getSources();
+    const auto &sources = SourceDictionary::getSourcesOfType(AppContext::SourceType::ST_TELEGRAM);
     const auto *curElem = dynamic_cast<SourceTelegram*>((sources->at(index.row())).get());
     
     if (!curElem) return QVariant{};

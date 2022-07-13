@@ -57,13 +57,6 @@ bool SourceDictionary::createSourceContextFromBytes(const AppContext::SourceType
     case AppContext::SourceType::ST_VK: {
         sourceContext = std::make_shared<SourceContextVK>();
         
-        if (type == AppContext::SourceType::ST_VK) {
-            if (getSourceIteratorByType(AppContext::SourceType::ST_VK) == m_sources->end()) {
-                if (!createNewSource(std::make_unique<SourceVK>()))
-                    return false;
-            }
-        }
-        
         break;
     }
     default: return false;
@@ -72,6 +65,13 @@ bool SourceDictionary::createSourceContextFromBytes(const AppContext::SourceType
     if (!sourceContext->fromByteArray(data)) return false;
     
     m_sourcesContexts->push_back(sourceContext);
+    
+    if (type == AppContext::SourceType::ST_VK) {
+        if (getSourceIteratorByType(AppContext::SourceType::ST_VK) == m_sources->end()) {
+            if (!createNewSource(std::make_unique<SourceVK>()))
+                return false;
+        }
+    }
     
     return true;
 }
@@ -165,6 +165,17 @@ const std::shared_ptr<std::vector<std::shared_ptr<SourceBase>>> &SourceDictionar
 const std::shared_ptr<std::vector<std::shared_ptr<SourceContextInterface>>> &SourceDictionary::getSourcesContexts()
 {
     return m_sourcesContexts;
+}
+
+std::unique_ptr<std::vector<std::shared_ptr<SourceBase> > > SourceDictionary::getSourcesOfType(const AppContext::SourceType type)
+{
+    std::unique_ptr<std::vector<std::shared_ptr<SourceBase>>> sources = std::make_unique<std::vector<std::shared_ptr<SourceBase>>>();
+    
+    for (auto i = m_sources->begin(); i != m_sources->end(); ++i) {
+        if ((*i)->getType() == type) sources->push_back((*i));
+    }
+    
+    return std::move(sources);
 }
 
 std::shared_ptr<SourceContextInterface> SourceDictionary::getSourceContext(const AppContext::SourceType sourceType)

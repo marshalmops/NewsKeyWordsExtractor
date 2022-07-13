@@ -9,11 +9,17 @@
 class NewsParserBase
 {
 public:
+    enum ParsingResult : uint8_t {
+        PR_NO_DATA = 0,
+        PR_ERROR,
+        PR_SUCCESS
+    };
+    
     NewsParserBase(const AppContext::SourceType sourceType);
     virtual ~NewsParserBase() = default;
     
-    virtual bool parseData(const RawNewsDataBase &data,
-                           News &news) = 0;
+    virtual ParsingResult parseData(const RawNewsDataBase &data,
+                                    News &news) = 0;
     
     AppContext::SourceType getSourceType() const;
     

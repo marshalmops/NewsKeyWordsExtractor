@@ -1,7 +1,7 @@
 #include "ParserDictionary.h"
 
-bool ParserDictionary::parseData(const RawNewsDataBase &data,
-                                 News &news)
+NewsParserBase::ParsingResult ParserDictionary::parseData(const RawNewsDataBase &data,
+                                                          News &news)
 {
     auto parser = getParserBySourceType(data.getSource()->getType());
     

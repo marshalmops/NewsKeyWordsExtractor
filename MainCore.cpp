@@ -40,9 +40,15 @@ void MainCore::launchWorkers(const uint16_t count)
 
 void MainCore::processError(const Error err)
 {
+    if (m_isCriticalErrorReceived) return;
+    
     QMessageBox{QMessageBox::Icon::Critical, tr("Error"), err.getText()}.exec();
     
-    if (err.isCritical()) emit stop();
+    if (err.isCritical()) {
+        m_isCriticalErrorReceived = true;
+        
+        emit stop();
+    }
 }
 
 void MainCore::processReceivedData(std::vector<RawNewsDataBase> data)
@@ -65,7 +71,7 @@ void MainCore::checkReceivedDataProcessingCompleteon()
         return;
     }
     
-    emit dataReceived();
+    emit dataReceived(true);
 }
 
 void MainCore::addRSSSource(const QString rssUrl, 
@@ -154,7 +160,7 @@ void MainCore::getData()
     if (SourceDictionary::getSources()->empty()) {
         processError(Error{tr("No sources have been provided!")});
         
-        emit dataNotReceived();
+        emit dataReceived(false);
         
         return;
     }

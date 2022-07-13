@@ -7,7 +7,7 @@ NewsParserStandardRSS::NewsParserStandardRSS()
     
 }
 
-bool NewsParserStandardRSS::parseData(const RawNewsDataBase &data, 
+NewsParserBase::ParsingResult NewsParserStandardRSS::parseData(const RawNewsDataBase &data, 
                                       News &news)
 {
     QGumboDocument dataHtmlPage{QGumboDocument::parse(data.getData())};
@@ -22,9 +22,9 @@ bool NewsParserStandardRSS::parseData(const RawNewsDataBase &data,
         newsContent += i->innerText();
     }
     
-    if (newsContent.isEmpty()) return false;
+    if (newsContent.isEmpty()) return NewsParserBase::ParsingResult::PR_NO_DATA;
     
     news = News{std::move(newsContent)};
     
-    return true;
+    return NewsParserBase::ParsingResult::PR_SUCCESS;
 }

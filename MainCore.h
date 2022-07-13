@@ -35,8 +35,7 @@ signals:
     
     // to AppView:
     
-    void dataReceived();
-    void dataNotReceived();
+    void dataReceived(bool successFlag);
     
     void rssSourceAdded     ();
     void telegramSourceAdded();
@@ -95,6 +94,8 @@ private:
     
     uint64_t m_totalNewsCountOnProcessing;
     uint64_t m_newsProcessedCounter;
+    
+    bool m_isCriticalErrorReceived;
 };
 
 #endif // MAINCORE_H

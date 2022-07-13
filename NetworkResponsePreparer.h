@@ -4,6 +4,7 @@
 #include "AppContext.h"
 
 #include "NetworkResponsePreparerRSS.h"
+#include "NetworkResponsePreparerVK.h"
 
 class NetworkResponsePreparer
 {

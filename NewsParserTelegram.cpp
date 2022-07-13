@@ -6,8 +6,8 @@ NewsParserTelegram::NewsParserTelegram()
     
 }
 
-bool NewsParserTelegram::parseData(const RawNewsDataBase &data, 
-                                   News &news)
+NewsParserBase::ParsingResult NewsParserTelegram::parseData(const RawNewsDataBase &data, 
+                                                            News &news)
 {
     // parsing Telegram JSON data...
 }

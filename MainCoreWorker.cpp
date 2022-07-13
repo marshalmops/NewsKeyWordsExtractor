@@ -36,10 +36,17 @@ void MainCoreWorker::start()
         
         News parsedNews{};
         
-        if (!ParserDictionary::parseData(newRawNews, parsedNews)) {
+        switch (ParserDictionary::parseData(newRawNews, parsedNews)) {
+        case NewsParserBase::ParsingResult::PR_ERROR: {
             emit errorOccured(Error{"Raw news parsing error!", true});
             
             continue;
+        }
+        case NewsParserBase::ParsingResult::PR_NO_DATA: {
+            emit newsDataProcessed();
+            
+            continue;
+        }
         }
         
         if (!m_textKeyWordsExtractor->extractKeyWordsOfNews(parsedNews, m_dictionary)) {

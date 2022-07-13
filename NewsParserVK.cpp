@@ -6,54 +6,60 @@ NewsParserVK::NewsParserVK()
     
 }
 
-bool NewsParserVK::parseData(const RawNewsDataBase &data, 
-                             News &news)
+NewsParserBase::ParsingResult NewsParserVK::parseData(const RawNewsDataBase &data, 
+                                                      News &news)
 {
-//    std::vector<News> newsBuffer{};
+    auto newsData = data.getData();
     
-//    QJsonDocument jsonData{QJsonDocument::fromJson(data.getData())};
+    if (newsData.isEmpty()) 
+        return NewsParserBase::ParsingResult::PR_ERROR;
     
-//    if (jsonData.isObject()) return false;
+    QJsonDocument newsDataJson{QJsonDocument::fromJson(newsData)};
+    QJsonObject   newsItemJson{newsDataJson.object()};
     
-//    QJsonObject rootObject{jsonData.object()};
+    if (newsItemJson.isEmpty()) 
+        return NewsParserBase::ParsingResult::PR_ERROR;
     
-//    if (!rootObject.contains(C_ITEMS_WRAPPER_PROP_NAME))   return false;
-//    if (!rootObject[C_ITEMS_WRAPPER_PROP_NAME].isObject()) return false;
+    QString postType{};
     
-//    QJsonObject itemsWrapperObject{rootObject[C_ITEMS_WRAPPER_PROP_NAME].toObject()};
+    if (!getPostType(newsItemJson, postType))
+        return NewsParserBase::ParsingResult::PR_ERROR;
     
-//    if (!itemsWrapperObject.contains(C_ITEMS_PROP_NAME))   return false;
-//    if (!itemsWrapperObject[C_ITEMS_PROP_NAME].isArray()) return false;
+    if (postType != C_POST_TYPE_PROP_VALUE)
+        return NewsParserBase::ParsingResult::PR_NO_DATA;
     
-//    QJsonArray itemsArray{itemsWrapperObject[C_ITEMS_PROP_NAME]};
+    if (!newsItemJson.contains(C_POST_TEXT_PROP_NAME))
+        return NewsParserBase::ParsingResult::PR_NO_DATA;
     
-//    foreach (const auto &item, itemsArray) {
-//        if (!item.isObject()) return false;
-        
-//        QJsonObject curItemObject{item.toObject()};
-        
-//        if (!curItemObject.contains(C_POST_TYPE_PROP_NAME)
-//         || !curItemObject.contains(C_POST_TEXT_PROP_NAME))
-//        { 
-//            return false;
-//        }
-        
-//        if (!curItemObject[C_POST_TYPE_PROP_NAME].isString()
-//         || !curItemObject[C_POST_TEXT_PROP_NAME].isString())
-//        {
-//            return false;
-//        }
-        
-//        QString postType{curItemObject[C_POST_TYPE_PROP_NAME].toString()};
-        
-//        if (postType != C_POST_TYPE_PROP_VALUE) continue;
-        
-//        QString postText{curItemObject[C_POST_TEXT_PROP_NAME].toString()};
-        
-//        newsBuffer.push_back(News{postText});
-//    }
+    if (!newsItemJson[C_POST_TEXT_PROP_NAME].isString())
+        return NewsParserBase::ParsingResult::PR_NO_DATA;
     
-//    news = std::move(newsBuffer);
+    QString postText{newsItemJson[C_POST_TEXT_PROP_NAME].toString()};
     
-    return true;
+    if (postText.isEmpty())
+        return NewsParserBase::ParsingResult::PR_NO_DATA;
+    
+    news = News{postText};
+    
+    return NewsParserBase::ParsingResult::PR_SUCCESS;
 }
+
+bool NewsParserVK::getPostType(const QJsonObject &obj, 
+                               QString &postType) const
+{
+    if (obj.isEmpty()) return false;
+    
+    static QStringList possiblePostTypePropNames = {"post_type", "type"};
+    
+    foreach (const auto &possiblePropName, possiblePostTypePropNames) {
+        if (obj.contains(possiblePropName)) 
+            if (obj[possiblePropName].isString()) {
+                postType = obj[possiblePropName].toString();
+                
+                break;
+            }
+    }
+    
+    return !postType.isEmpty();
+}
+

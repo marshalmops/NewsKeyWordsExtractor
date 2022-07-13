@@ -2,6 +2,18 @@
 
 namespace {
 
+bool removeInlineLinks(QString &string) {
+    if (string.isEmpty()) return false;
+    
+    QString stringBuffer{};
+    
+    stringBuffer = string.remove(QRegExp{"(https?://)?(www\\.)?[A-Za-zА-Яа-я0-9_-]+\\.[A-Za-zА-Яа-я]+(/[A-Za-zzА-Яа-я0-9\\.\?#=]*)*"});
+    
+    string = std::move(stringBuffer);
+    
+    return true;
+}
+
 bool removeOtherSigns(QString &string) {
     if (string.isEmpty()) return false;
     
@@ -21,17 +33,6 @@ bool removeOtherWords(QString &string,
     QStringList wordsBuffer{};
     
     const auto &bannedWordsList = TextKeyWordsExtractorContext::getBannedWordsList();
-    
-//    static const QStringList otherWords{"а", "но", "да", "или", "что", "как", "чтобы", "и", "либо", "то",
-//                                        "у", "о", "к", "в", "с", "от", "об", "обо", "до", "по", "под", "на", "над",
-//                                        "за", "из-за", "из-под", "перед", "через", "из", "для", "мы", "они", 
-//                                        "вы", "их", "им", "ими", "них" "я", "он", "она", "ей", "ее", "её", 
-//                                        "ему", "им", "вас", "вам", "вами", "меня", "мне", "мной", "ним", "них", 
-//                                        "его", "нем", "нём", "ней", "ты", "тебя", "тебе", "тобой", "мы", "нас", 
-//                                        "нам", "нами", "оно", "так", "же", "также", "не", "нет", "это",
-//                                        "такой", "какой", "некий", "во", "при", "чем", "затем", "зачем",
-//                                        "однако", "эти", "этого", "этой", "этот", "эту", "этом", "этим",
-//                                        "уже", "туда", "тем", "том", "самих", "самых", "самой", "сам", "сама"};
     
     auto sourceWords = string.simplified().split(' ');
     
@@ -71,7 +72,8 @@ bool TextKeyWordsExtractor::prepareWords(const QString &string,
 {
     QString stringBuffer{string.toLower()};
     
-    if (!removeOtherSigns(stringBuffer)) return false;
+    if (!removeInlineLinks(stringBuffer)) return false;
+    if (!removeOtherSigns(stringBuffer))  return false;
     
     QStringList wordsBuffer{};
     
