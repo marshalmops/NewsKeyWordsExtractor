@@ -293,6 +293,13 @@ void AppView::endContextPreparing()
     m_gettingButton->setEnabled(true);
 }
 
+void AppView::resetViewPreparedState()
+{
+    m_isPrepared = false;
+    
+    changeLoadingState(false);
+}
+
 void AppView::startDataGetting()
 {
     changeLoadingState(true);

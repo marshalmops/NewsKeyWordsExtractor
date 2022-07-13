@@ -73,6 +73,8 @@ public slots:
     void startContextPreparing();
     void endContextPreparing  ();
     
+    void resetViewPreparedState();
+    
     void startDataGetting();
     void endDataGetting(bool successFlag = true);
     

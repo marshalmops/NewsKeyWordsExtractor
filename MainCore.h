@@ -43,6 +43,8 @@ signals:
     void rssSourceDeleted     ();
     void telegramSourceDeleted();
     
+    void repreparingRequested();
+    
     // routing signals for NetworkCore & AppView:
     
     void additionalInputDataRequested(const FormTemplate paramsToGet);

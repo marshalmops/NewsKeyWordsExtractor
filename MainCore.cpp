@@ -72,6 +72,8 @@ void MainCore::checkReceivedDataProcessingCompleteon()
         return;
     }
     
+    m_newsProcessedCounter = 0;
+    
     emit dataReceived(true);
 }
 
@@ -133,6 +135,8 @@ void MainCore::setVKData(const AppContext::Token token)
         
         return;
     }
+    
+    emit repreparingRequested();
 }
 
 void MainCore::setTelegramData(const AppContext::Phone phone, 
@@ -144,6 +148,8 @@ void MainCore::setTelegramData(const AppContext::Phone phone,
         
         return;
     }
+    
+    emit repreparingRequested();
 }
 
 void MainCore::prepareGettingContext()
