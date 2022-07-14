@@ -1,5 +1,19 @@
 #include "AppInitializer.h"
 
+namespace {
+
+std::vector<AppContext::SourceType> sourcesContextsToTypesVector() {
+    std::vector<AppContext::SourceType> sourcesContextsTypes{};
+    auto sourcesContexts = SourceDictionary::getSourcesContexts();
+    
+    for (auto i = sourcesContexts->begin(); i != sourcesContexts->end(); ++i)
+        sourcesContextsTypes.push_back((*i)->getType());
+    
+    return std::move(sourcesContextsTypes);
+}
+
+}
+
 bool AppInitializer::initializeApp(QApplication &app,
                                    AppView &appView, 
                                    std::unique_ptr<MainCore> &mainCore,
@@ -12,6 +26,12 @@ bool AppInitializer::initializeApp(QApplication &app,
         // no saved contexts or error occurance...
     }
     
+    if (!appView.initializeSourcesContextsViewState(sourcesContextsToTypesVector())) {
+        // bad source context type has been provided...
+        
+        return false;
+    }
+        
     if (!fileManager->getSourcesFileManager()->loadSources()) {
         // no saved sources or error occurance...
     }

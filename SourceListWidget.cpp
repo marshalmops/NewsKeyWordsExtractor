@@ -3,7 +3,8 @@
 SourceListWidget::SourceListWidget(SourceListModel *model,
                                    QWidget *parent)
     : QListView{parent},
-      m_modelPtr{model}
+      m_modelPtr{model},
+      m_lastSelectedItemIndex{-1}
 {
     m_modelPtr->setParent(this);
     
@@ -11,6 +12,11 @@ SourceListWidget::SourceListWidget(SourceListModel *model,
     setModel(m_modelPtr);
     
     connect(this, &QListView::clicked, this, &SourceListWidget::selectedSourceChanged);
+}
+
+int SourceListWidget::getLastSelectedItemIndex()
+{
+    return m_lastSelectedItemIndex;
 }
 
 AppContext::Id SourceListWidget::getLastSelectedSourceId() const

@@ -107,6 +107,19 @@ AppView::AppView(QWidget *parent)
     m_setTelegramContextButton->setEnabled(m_isTelegramAllowed);
 }
 
+bool AppView::initializeSourcesContextsViewState(const std::vector<AppContext::SourceType> &setContexts)
+{
+    for (auto i = setContexts.begin(); i != setContexts.end(); ++i) {
+        switch (*i) {
+        case AppContext::SourceType::ST_VK:       {endVKDataSet();       break;}
+        case AppContext::SourceType::ST_TELEGRAM: {endTelegramDataSet(); break;}
+        default: return false;
+        }
+    }
+    
+    return true;
+}
+
 void AppView::addRSSSource()
 {
     FormData     formData{};
@@ -155,7 +168,7 @@ void AppView::addTelegramSource()
 
 void AppView::deleteRSSSource()
 {
-    if (!m_rssSourcesList->currentIndex().isValid()) {
+    if (m_rssSourcesList->getLastSelectedItemIndex() < 0) {
         QMessageBox::warning(this, tr("Error"), tr("Choose the source to delete!"));
         
         return;
@@ -240,6 +253,8 @@ void AppView::setVKData()
         return;
     }
     
+    endVKDataSet();
+    
     emit vkDataProvided(token);
 }
 
@@ -266,7 +281,19 @@ void AppView::setTelegramData()
         return;
     }
     
+    endTelegramDataSet();
+    
     emit telegramDataProvided(phone, apiId, apiHash);
+}
+
+void AppView::endVKDataSet()
+{
+    m_setVKContextButton->setText(tr("Reset.."));
+}
+
+void AppView::endTelegramDataSet()
+{
+    m_setTelegramContextButton->setText(tr("Reset.."));
 }
 
 void AppView::getFormDataByTemplate(const FormTemplate paramsToGet)

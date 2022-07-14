@@ -30,6 +30,8 @@ class AppView : public QDialog
 public:
     explicit AppView(QWidget *parent = nullptr);
     
+    bool initializeSourcesContextsViewState(const std::vector<AppContext::SourceType> &setContexts);
+    
 signals:
     // to MainCore:
     
@@ -67,6 +69,9 @@ public slots:
     
     void setVKData      ();
     void setTelegramData();
+    
+    void endVKDataSet();
+    void endTelegramDataSet();
     
     void getFormDataByTemplate(const FormTemplate paramsToGet);
     

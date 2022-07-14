@@ -15,6 +15,7 @@ public:
     explicit SourceListWidget(SourceListModel *model,
                               QWidget *parent = nullptr);
     
+    int getLastSelectedItemIndex();
     AppContext::Id getLastSelectedSourceId() const;
     
 public slots:
