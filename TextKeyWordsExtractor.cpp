@@ -133,7 +133,7 @@ bool TextKeyWordsExtractor::putKeyWordsToRemoteDictionary(const StringDictionary
     
     std::shared_ptr<ThreadedTransactionData> transactionData{};
     
-    for (auto i = 0; (i < C_MAX_KEY_WORDS_COUNT) && (i < vector.size()); ++i) {
+    for (auto i = 0; (i < TextKeyWordsExtractorContext::getMaxKeyWordsCount()) && (i < vector.size()); ++i) {
         QString                    curWord     {vector.at(i).first};
         AppContext::WordsFrequency curFrequency{vector.at(i).second};
         

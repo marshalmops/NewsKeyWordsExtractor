@@ -12,8 +12,6 @@
 
 class TextKeyWordsExtractor
 {
-    constexpr static const uint32_t C_MAX_KEY_WORDS_COUNT = 10;
-    
 public:
     TextKeyWordsExtractor() = default;
     
