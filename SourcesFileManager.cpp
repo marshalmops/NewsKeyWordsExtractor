@@ -99,6 +99,8 @@ bool SourcesFileManager::loadSourcesContexts(const QString &filename)
     size_t     curIndex  {0};
     
     while (true) {
+        if (curIndex >= sourcesContextsBytes.length()) break;
+        
         QByteArray rawSourceType{sourcesContextsBytes.mid(curIndex, sizeof(AppContext::SourceType))};
         bool isConvOK{false};
         
@@ -129,4 +131,6 @@ bool SourcesFileManager::loadSourcesContexts(const QString &filename)
         
         rawSourceType.clear();
     }
+    
+    return true;
 }

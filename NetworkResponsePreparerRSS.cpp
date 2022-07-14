@@ -44,7 +44,8 @@ NetworkResponsePreparerRSS::NetworkResponsePreparerRSS(const std::shared_ptr<Net
 bool NetworkResponsePreparerRSS::prepareResponse(const QByteArray &responseBytes, 
                                                  std::vector<QByteArray> &preparedData)
 {
-    if (responseBytes.isEmpty()) return false;
+    if (responseBytes.isEmpty()) 
+        return false;
     
     // getting links from provided XML...
     
@@ -64,12 +65,14 @@ bool NetworkResponsePreparerRSS::prepareResponse(const QByteArray &responseBytes
         
         QUrl linkUrl{curLinkString};
         
-        if (!linkUrl.isValid()) return false;
+        if (!linkUrl.isValid()) 
+            return false;
         
         newsLinks.push_back(std::move(linkUrl));
     }
     
-    if (newsLinks.empty()) return false;
+    if (newsLinks.empty()) 
+        return false;
     
     // getting news pages by gotten links...
     
@@ -78,6 +81,8 @@ bool NetworkResponsePreparerRSS::prepareResponse(const QByteArray &responseBytes
     foreach (const auto &link, newsLinks) {
         QNetworkRequest newRequest{link};
         QByteArray curResponse{};
+        
+        newRequest.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
         
         if (!m_executor->executeGetRequest(newRequest, curResponse))
             return false;

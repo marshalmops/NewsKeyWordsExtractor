@@ -7,7 +7,7 @@ bool removeInlineLinks(QString &string) {
     
     QString stringBuffer{};
     
-    stringBuffer = string.remove(QRegExp{"(https?://)?(www\\.)?[A-Za-zА-Яа-я0-9_-]+\\.[A-Za-zА-Яа-я]+(/[A-Za-zzА-Яа-я0-9\\.\?#=]*)*"});
+    stringBuffer = string.remove(QRegExp{"\\s+(https?://)?(www\\.)?([A-Za-zА-Яа-я0-9_-]+\\.)+[A-Za-z]+(/[A-Za-zzА-Яа-я0-9\?#=]*(.[A-Za-z]+)?)*"});
     
     string = std::move(stringBuffer);
     

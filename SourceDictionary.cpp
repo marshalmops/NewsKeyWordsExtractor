@@ -47,6 +47,9 @@ bool SourceDictionary::createSourceContextFromBytes(const AppContext::SourceType
 {
     std::shared_ptr<SourceContextInterface> sourceContext;
     
+    if (getSourceContext(type).get()) 
+        return true;
+    
     switch (type) {
     case AppContext::SourceType::ST_STANDARD_RSS: {return true;}
     case AppContext::SourceType::ST_TELEGRAM: {

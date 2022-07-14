@@ -21,12 +21,11 @@ bool AppInitializer::initializeApp(QApplication &app,
                                    std::shared_ptr<FileManager> &fileManager)
 {
     fileManager = std::make_shared<FileManager>(std::make_shared<SourcesFileManager>());
-    
-    if (!fileManager->getSourcesFileManager()->loadSourcesContexts()) {
+
+    if (!(fileManager->getSourcesFileManager()->loadSourcesContexts())) {
         // no saved contexts or error occurance...
-    }
-    
-    if (!appView.initializeSourcesContextsViewState(sourcesContextsToTypesVector())) {
+        
+    } else if (!appView.initializeSourcesContextsViewState(sourcesContextsToTypesVector())) {
         // bad source context type has been provided...
         
         return false;
