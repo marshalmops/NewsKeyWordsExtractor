@@ -20,8 +20,11 @@ int main(int argc, char *argv[])
     qRegisterMetaType<FormTemplate>();
     qRegisterMetaType<FormData>();
     
-    if (!AppInitializer::initializeApp(app, appView, mainCore, networkCore, fileManager)) 
+    if (!AppInitializer::initializeApp(app, appView, mainCore, networkCore, fileManager)) { 
+        QMessageBox::critical(&appView, QObject::tr("Error"), QObject::tr("Initialization error!"));
+        
         return -1;
+    }
     
     appView.show();
     
